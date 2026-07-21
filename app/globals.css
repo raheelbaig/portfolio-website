@@ -1,26 +1,28 @@
 @import "tailwindcss";
+@import "../styles/tokens.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/*
+ * Font tokens reference the next/font variables injected on <html>
+ * (app/layout.tsx), so they must be declared inline — values resolve at
+ * runtime, not build time. The two voices of the film:
+ *   grotesk   — Monumental + Editorial (one family, two optical behaviors)
+ *   technical — the mono instrumentation voice
+ */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-*: initial;
+  --font-grotesk: var(--font-src-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-technical: var(--font-src-technical), ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Dark mode only — the one-light dark world IS the brand (Architecture §17). */
+:root {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-stage-black);
+  color: var(--color-ivory-100);
+  font-family: var(--font-grotesk);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

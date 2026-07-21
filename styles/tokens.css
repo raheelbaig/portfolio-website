@@ -1,0 +1,144 @@
+/*
+ * GENERATED FILE — do not edit by hand.
+ * Source of truth: styles/tokens.ts. Regenerate with `npm run tokens`.
+ */
+
+@theme {
+  /* Closed vocabularies: the Bible's palette is the whole palette. */
+  --color-*: initial;
+  --text-*: initial;
+  --leading-*: initial;
+  --tracking-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+  --blur-*: initial;
+  --ease-*: initial;
+  --animate-*: initial;
+  --spacing-*: initial;
+  --container-*: initial;
+
+  /* Colors (Bible §2) */
+  --color-stage-black: #0A0A0C;
+  --color-depth-black: #050506;
+  --color-obsidian: #101013;
+  --color-ivory-100: #F2EFE9;
+  --color-ivory-60: #9C9994;
+  --color-ivory-30: #55534F;
+  --color-ivory-12: rgb(242 239 233 / 0.12);
+  --color-filament: #E8A855;
+  --color-filament-bloom: #FFC98B;
+  --color-instrument-blue: #8FA3B8;
+
+  /* Spacing (Bible §4 — the seven lawful values) */
+  --spacing-within-1: 8px;
+  --spacing-within-2: 16px;
+  --spacing-within-3: 24px;
+  --spacing-block: 40px;
+  --spacing-thought: 64px;
+  --spacing-passage: 104px;
+  --spacing-scene: 168px;
+
+  /* Containers (Bible §4 — three containers; full-bleed needs no token) */
+  --container-narrative: 680px;
+  --container-instrument: 920px;
+
+  /* Type scale (Bible §3) */
+  --text-technical-sm: 0.8125rem;
+  --text-technical-sm--line-height: 1.4;
+  --text-technical-sm--letter-spacing: 0.06em;
+  --text-technical: 0.9375rem;
+  --text-technical--line-height: 1.4;
+  --text-technical--letter-spacing: 0.06em;
+  --text-base: 1.0625rem;
+  --text-base--line-height: 1.55;
+  --text-base--letter-spacing: 0em;
+  --text-lead: 1.3125rem;
+  --text-lead--line-height: 1.55;
+  --text-lead--letter-spacing: 0em;
+  --text-editorial: 1.6875rem;
+  --text-editorial--line-height: 1.55;
+  --text-editorial--letter-spacing: 0em;
+  --text-editorial-lg: 2.125rem;
+  --text-editorial-lg--line-height: 1.5;
+  --text-editorial-lg--letter-spacing: 0em;
+  --text-editorial-xl: 2.625rem;
+  --text-editorial-xl--line-height: 1.5;
+  --text-editorial-xl--letter-spacing: 0em;
+  --text-monumental-close: clamp(2.25rem, 6vw, 8rem);
+  --text-monumental-close--line-height: 1;
+  --text-monumental-close--letter-spacing: -0.02em;
+  --text-monumental-title: clamp(3rem, 8vw, 10.5rem);
+  --text-monumental-title--line-height: 0.975;
+  --text-monumental-title--letter-spacing: -0.02em;
+  --text-monumental-name: clamp(4rem, 13vw, 17rem);
+  --text-monumental-name--line-height: 0.95;
+  --text-monumental-name--letter-spacing: -0.02em;
+
+  /* Leading & tracking (Bible §3) */
+  --leading-monumental: 0.975;
+  --leading-editorial: 1.55;
+  --leading-technical: 1.4;
+  --leading-data: 1;
+  --tracking-monumental: -0.02em;
+  --tracking-editorial: 0em;
+  --tracking-technical: 0.06em;
+  --tracking-inhale: 0.2em;
+
+  /* Radii (Bible §2 — one radius family) */
+  --radius-technical: 2px;
+  --radius-pane: 12px;
+  --radius-attendant: 9999px;
+
+  /* Shadows: none. Depth is layers of black (Bible §7). */
+
+  /* Glass blur (Bible §2 — Smoke Glass is the only blur in the world) */
+  --blur-smoke: 24px;
+
+  /* Motion (Bible §6 — the glide; springs and bounces do not exist) */
+  --ease-glide: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Breakpoints (Architecture §14) */
+  --breakpoint-cinema: 1680px;
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  --breakpoint-2xl: 96rem;
+}
+
+/* Non-utility tokens: consumed as CSS variables by the Set,
+   mirrored in TS for the Crew. */
+:root {
+  /* Durations (Bible §6) */
+  --duration-instant: 120ms;
+  --duration-gesture: 240ms;
+  --duration-passage: 480ms;
+  --duration-cinematic: 900ms;
+  --stagger-glance: 75ms;
+
+  /* Z stack (Architecture §8) */
+  --z-canvas: 0;
+  --z-film: 10;
+  --z-nav: 20;
+  --z-attendant: 30;
+  --z-overlay: 40;
+  --z-loader: 50;
+
+  /* Glass materials (Bible §2) */
+  --glass-smoke-surface: rgb(10 10 12 / 0.65);
+  --glass-obsidian-surface: #101013;
+  --glass-filament-tint: rgb(232 168 85 / 0.05);
+  --glass-edge-rest: rgb(242 239 233 / 0.12);
+  --glass-edge-lit: rgb(242 239 233 / 0.30);
+
+  /* Glow (Bible §2 — one strong glow per viewport) */
+  --glow-bloom: rgb(255 201 139 / 0.25);
+  --glow-lift: rgb(242 239 233 / 0.08);
+  --glow-pulse: rgb(143 163 184 / 0.06);
+
+  /* Film grain (Bible §2 — one grain, everywhere, forever) */
+  --grain-opacity: 0.025;
+  --grain-opacity-deep: 0.04;
+}
