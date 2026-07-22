@@ -74,6 +74,16 @@ export const text = {
   editorial: { size: "1.6875rem", leading: "1.55", tracking: "0em" },
   "editorial-lg": { size: "2.125rem", leading: "1.5", tracking: "0em" },
   "editorial-xl": { size: "2.625rem", leading: "1.5", tracking: "0em" },
+  /**
+   * The monumental register seen from far away — doorway names "small at
+   * this distance" (Storyboard Scene 6). Sized at the lawful top of the
+   * modular scale (42px), carrying monumental tracking and case.
+   */
+  "monumental-distant": {
+    size: "2.625rem",
+    leading: "1.1",
+    tracking: "-0.02em",
+  },
   /** "Let's Connect" — ~6vw, composed to the frame. */
   "monumental-close": {
     size: "clamp(2.25rem, 6vw, 8rem)",
@@ -222,6 +232,31 @@ export const breakpoint = {
 } as const;
 
 /**
+ * §8 — Photography: the three sanctioned portrait scales. Only Monumental
+ * exists so far; Conversational and Distant arrive with their scenes. Like
+ * the type system, no intermediate scales — the gap is the meaning.
+ */
+export const portrait = {
+  /** Master aspect (width / height) reserved for the transparent cutout. */
+  aspect: "3 / 4",
+  /**
+   * Monumental scale (hero, invitation): the figure at ~68% of frame height
+   * (sanctioned range 60–75%), never wider than the frame's safe area.
+   * Expressed as a width so aspect-ratio can derive height on any viewport.
+   */
+  "monumental-width":
+    "min(calc(68svh * (3 / 4)), calc(100vw - (2 * var(--spacing-safe))))",
+  /**
+   * Conversational scale (About): closer, chest-up, one-third position.
+   * The Bible fixes only the gaps between scales; ~52% of frame height sits
+   * clearly between Monumental (60–75%) and Distant (<15%).
+   */
+  "conversational-width": "calc(52svh * (3 / 4))",
+  /** Distant scale (the road): a figure at the end of the path, <15% of frame height. */
+  "distant-width": "calc(13svh * (3 / 4))",
+} as const;
+
+/**
  * §5 — Icons: almost none. 1.25px stroke, geometric, Ivory-60, never filled,
  * never Filament. Consumed by components/primitives/icons.tsx only (TS-side;
  * no CSS emission needed).
@@ -238,6 +273,7 @@ export const tokens = {
   color,
   space,
   icon,
+  portrait,
   container,
   text,
   leading,

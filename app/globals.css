@@ -127,6 +127,47 @@ body::after {
     );
   }
 
+  /* Scenes 7–9 — the three worlds' temperature grades (Storyboard: "the
+     visitor should feel the temperature change at each threshold"). Built
+     from the closed palette at ambient intensity (Bible §7: 2–4% lift with
+     soft vertical falloff) — atmosphere, never a background color. */
+  .stage-world-salhub {
+    /* Daylight-neutral: clean bright-on-dark clarity. */
+    background-image: linear-gradient(
+      color-mix(in oklab, var(--color-ivory-100) 4%, var(--color-stage-black)),
+      var(--color-stage-black) 65%
+    );
+  }
+  .stage-world-strangerus {
+    /* The warmest scene in the film: human-hour dusk. */
+    background-image: linear-gradient(
+      color-mix(in oklab, var(--color-filament) 6%, var(--color-stage-black)),
+      var(--color-stage-black) 70%
+    );
+  }
+  .stage-world-zh {
+    /* Cool, exact, international: the crispest engineered light. */
+    background-image: linear-gradient(
+      color-mix(
+        in oklab,
+        var(--color-instrument-blue) 5%,
+        var(--color-stage-black)
+      ),
+      var(--color-stage-black) 65%
+    );
+  }
+
+  /* Scene 2 — the portrait placeholder: a body of faint light where the
+     figure will stand. The real graded cutout replaces this in the asset
+     milestone; the reserved box (aspect + scale tokens) must not change. */
+  .portrait-void {
+    background-image: radial-gradient(
+      ellipse 60% 48% at 50% 34%,
+      var(--glow-lift),
+      transparent 78%
+    );
+  }
+
   /* Specimen rows (Bible §5): names separated by a quiet interpunct, never chips. */
   .specimen-row li:not(:last-child)::after {
     content: "·";

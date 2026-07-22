@@ -30,13 +30,15 @@ const monumental = cva("font-grotesk font-semibold text-ivory-100", {
       name: "text-monumental-name uppercase",
       /** The three project titles. Uppercase by law. */
       title: "text-monumental-title uppercase",
+      /** The monumental register at camera distance — doorway names only. */
+      distant: "text-monumental-distant uppercase",
       /** "Let's Connect" — the farewell. Sentence case: the human voice never shouts. */
       close: "text-monumental-close",
     },
   },
 });
 
-type MonumentalTag = "h1" | "h2" | "p" | "span";
+type MonumentalTag = "h1" | "h2" | "h3" | "p" | "span";
 
 const monumentalDefaultTag: Record<
   NonNullable<VariantProps<typeof monumental>["variant"]>,
@@ -44,6 +46,7 @@ const monumentalDefaultTag: Record<
 > = {
   name: "h1",
   title: "h2",
+  distant: "h3",
   close: "h2",
 };
 

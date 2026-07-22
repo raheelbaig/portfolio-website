@@ -17,15 +17,34 @@ import { Editorial, TechnicalLabel } from "@/components/primitives/voices";
 export function Section({
   id,
   labelledBy,
+  srHeading,
   children,
 }: {
   id?: string;
   /** id of the heading that names this section (usually the SectionHeader's). */
   labelledBy?: string;
+  /**
+   * For scenes whose storyboard frame shows no visible headline (the road,
+   * the bench): a visually-hidden h2 keeps the document outline correct
+   * (Architecture §13) without adding words to the shot. Requires `id`.
+   * Mutually exclusive with labelledBy.
+   */
+  srHeading?: string;
   children: React.ReactNode;
 }) {
+  const srHeadingId =
+    srHeading !== undefined && id !== undefined ? `${id}-title` : undefined;
   return (
-    <section id={id} aria-labelledby={labelledBy} className="relative isolate">
+    <section
+      id={id}
+      aria-labelledby={labelledBy ?? srHeadingId}
+      className="relative isolate"
+    >
+      {srHeading !== undefined && (
+        <h2 id={srHeadingId} className="sr-only">
+          {srHeading}
+        </h2>
+      )}
       {children}
     </section>
   );

@@ -25,6 +25,7 @@ import {
   glow,
   grain,
   leading,
+  portrait,
   radius,
   space,
   stagger,
@@ -137,6 +138,13 @@ for (const [name, value] of Object.entries(duration)) {
   push(`  --duration-${name}: ${value}ms;`);
 }
 push(`  --stagger-glance: ${stagger.glance}ms;`);
+push("");
+push(
+  "  /* Portrait scales (Bible §8 — three sanctioned scales, no in-betweens) */",
+);
+for (const [name, value] of Object.entries(portrait)) {
+  push(`  --portrait-${name}: ${value};`);
+}
 push("");
 push("  /* Z stack (Architecture §8) */");
 for (const [name, value] of Object.entries(z)) {

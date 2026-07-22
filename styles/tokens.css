@@ -68,6 +68,9 @@
   --text-editorial-xl: 2.625rem;
   --text-editorial-xl--line-height: 1.5;
   --text-editorial-xl--letter-spacing: 0em;
+  --text-monumental-distant: 2.625rem;
+  --text-monumental-distant--line-height: 1.1;
+  --text-monumental-distant--letter-spacing: -0.02em;
   --text-monumental-close: clamp(2.25rem, 6vw, 8rem);
   --text-monumental-close--line-height: 1;
   --text-monumental-close--letter-spacing: -0.02em;
@@ -119,6 +122,12 @@
   --duration-passage: 480ms;
   --duration-cinematic: 900ms;
   --stagger-glance: 75ms;
+
+  /* Portrait scales (Bible §8 — three sanctioned scales, no in-betweens) */
+  --portrait-aspect: 3 / 4;
+  --portrait-monumental-width: min(calc(68svh * (3 / 4)), calc(100vw - (2 * var(--spacing-safe))));
+  --portrait-conversational-width: calc(52svh * (3 / 4));
+  --portrait-distant-width: calc(13svh * (3 / 4));
 
   /* Z stack (Architecture §8) */
   --z-canvas: 0;
