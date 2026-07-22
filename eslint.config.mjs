@@ -46,9 +46,21 @@ const eslintConfig = defineConfig([
               message:
                 "The Set must not import the Crew (dependency arrow: Crew → Set → Script). Subscribe through hooks/ instead.",
             },
+            {
+              group: ["lucide-react"],
+              message:
+                "Icons are centralized in components/primitives/icons.tsx (Bible §5: the icon set is closed). Import IconTravel/IconExternal/IconClose from there.",
+            },
           ],
         },
       ],
+    },
+  },
+  {
+    // The one file allowed to speak to the icon library.
+    files: ["components/primitives/icons.tsx"],
+    rules: {
+      "no-restricted-imports": "off",
     },
   },
   {
@@ -64,6 +76,11 @@ const eslintConfig = defineConfig([
               group: animationLibraries,
               message:
                 "Animation and 3D libraries belong to the Crew (experience/). Routes compose; they do not animate (Laws 2, 11).",
+            },
+            {
+              group: ["lucide-react"],
+              message:
+                "Icons are centralized in components/primitives/icons.tsx (Bible §5: the icon set is closed). Import IconTravel/IconExternal/IconClose from there.",
             },
           ],
         },

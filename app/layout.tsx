@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Archivo, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { FooterShell } from "@/components/patterns/footer-shell";
+import { NavigationShell } from "@/components/patterns/navigation-shell";
 import { shell } from "@/content/copy/shell";
 import { metadataTitle, site } from "@/content/site";
 import { siteUrl } from "@/lib/env";
@@ -41,17 +43,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${grotesk.variable} ${technical.variable}`}>
-      <body>
-        <a href="#film">{shell.skipToFilm}</a>
-        <header>
-          <nav aria-label={shell.navLabel}>
-            <p>{shell.navPlaceholder}</p>
-          </nav>
-        </header>
-        <main id="film">{children}</main>
-        <footer>
-          <p>{shell.footerPlaceholder}</p>
-        </footer>
+      <body className="flex min-h-dvh flex-col">
+        <a
+          href="#film"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-within-2 focus:left-safe focus:z-(--z-loader) focus:rounded-technical focus:bg-obsidian focus:px-within-2 focus:py-within-1 focus:font-technical focus:text-technical-sm focus:text-ivory-100"
+        >
+          {shell.skipToFilm}
+        </a>
+        <NavigationShell />
+        <main id="film" className="flex-1">
+          {children}
+        </main>
+        <FooterShell />
       </body>
     </html>
   );

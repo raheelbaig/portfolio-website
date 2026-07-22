@@ -46,6 +46,10 @@ export const space = {
   thought: "64px",
   passage: "104px",
   scene: "168px",
+  /** §4 — Horizontal safe-area margins: 5vw, min 24px, max 96px, symmetric always. */
+  safe: "clamp(24px, 5vw, 96px)",
+  /** §14 (Architecture) — minimum interactive hit area, padded not sized. */
+  hit: "44px",
 } as const;
 
 /** §4 — Three containers, no exceptions. (The third, full-bleed, needs no token.) */
@@ -130,6 +134,8 @@ export const glow = {
   lift: "rgb(242 239 233 / 0.08)",
   /** The technical pulse: the attendant, the AI skill group. */
   pulse: "rgb(143 163 184 / 0.06)",
+  /** Canonical halo radius — glows are large and soft (§2: blur ≥ 3× the element). */
+  radius: "48px",
 } as const;
 
 /** §2 — The three materials. Maximum two per viewport. */
@@ -156,6 +162,8 @@ export const glass = {
 export const grain = {
   opacity: "0.025",
   "opacity-deep": "0.04",
+  /** Tile size of the noise texture — small enough to read as film, not pattern. */
+  tile: "160px",
 } as const;
 
 /** §6 — Four durations, cast like the type registers. No in-between values. */
@@ -194,6 +202,8 @@ export const z = {
   attendant: 30,
   overlay: 40,
   loader: 50,
+  /** The film grain overlays everything, including the loader (§2: one grain, everywhere). */
+  grain: 60,
 } as const;
 
 /**
@@ -211,9 +221,23 @@ export const breakpoint = {
   cinema: 1680,
 } as const;
 
+/**
+ * §5 — Icons: almost none. 1.25px stroke, geometric, Ivory-60, never filled,
+ * never Filament. Consumed by components/primitives/icons.tsx only (TS-side;
+ * no CSS emission needed).
+ */
+export const icon = {
+  stroke: 1.25,
+  /** Inline with text (Technical voice sizes). */
+  sizeInline: 16,
+  /** Standalone affordances. */
+  sizeAction: 20,
+} as const;
+
 export const tokens = {
   color,
   space,
+  icon,
   container,
   text,
   leading,

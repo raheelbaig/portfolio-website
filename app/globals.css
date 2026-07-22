@@ -26,3 +26,111 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/*
+ * The one film grain (Bible §2): everywhere, forever, never animated, never
+ * per-section. Sits above everything (including the loader) at 2–3% opacity.
+ */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-grain);
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: var(--grain-tile) var(--grain-tile);
+}
+
+/*
+ * Focus (Bible §10): lit with the same dignity as hover — a Filament edge
+ * plus an Ivory ring, never the browser default, never suppressed.
+ */
+:focus-visible {
+  outline: 1px solid var(--color-ivory-100);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px var(--glow-bloom);
+}
+
+@layer components {
+  /*
+   * The attention grammar (Bible §6/§10): the world notices you at Instant
+   * (120ms) and lets go of you at Gesture (240ms). Apply to any interactive
+   * element whose hover/focus response is a light state.
+   */
+  .light-transition {
+    transition-property:
+      color, background-color, border-color, text-decoration-color, opacity,
+      filter, box-shadow;
+    transition-timing-function: var(--ease-glide);
+    transition-duration: var(--duration-gesture);
+  }
+  .light-transition:hover,
+  .light-transition:focus-visible {
+    transition-duration: var(--duration-instant);
+  }
+
+  /*
+   * The three materials (Bible §2). Maximum two per viewport — a review
+   * rule; the classes exist only here so no fourth material can appear.
+   */
+  .material-smoke {
+    background-color: var(--glass-smoke-surface);
+    backdrop-filter: blur(var(--blur-smoke));
+  }
+  .material-obsidian {
+    background-color: var(--glass-obsidian-surface);
+  }
+  .material-filament {
+    background-color: var(--glass-smoke-surface);
+    background-image: linear-gradient(
+      var(--glass-filament-tint),
+      var(--glass-filament-tint)
+    );
+    backdrop-filter: blur(var(--blur-smoke));
+    box-shadow: inset 0 0 var(--glow-radius) var(--glass-filament-tint);
+  }
+
+  /* Borders are light catching an edge (Bible §2): 1px Ivory-12, top edge lit. */
+  .edge-light {
+    border: 1px solid var(--glass-edge-rest);
+    border-top-color: var(--glass-edge-lit);
+  }
+
+  /* The one strong glow per viewport (Bible §2). Budgeted — not decorated. */
+  .bloom {
+    box-shadow: 0 0 var(--glow-radius) var(--glow-bloom);
+  }
+
+  /* Background state 2 (Bible §2): the key light's falloff on the stage. */
+  .stage-keylight {
+    background-color: var(--color-stage-black);
+    background-image: radial-gradient(
+      ellipse 70% 55% at 50% 32%,
+      color-mix(in oklab, var(--color-filament) 6%, var(--color-stage-black)),
+      var(--color-stage-black) 72%
+    );
+  }
+
+  /* Background state 3 (Bible §2): two near-black depth layers, static until
+     the Crew drives their drift. */
+  .stage-depth-far {
+    background-image: linear-gradient(
+      var(--color-depth-black),
+      var(--color-stage-black)
+    );
+  }
+  .stage-depth-near {
+    background-image: linear-gradient(
+      transparent 40%,
+      var(--glass-obsidian-surface)
+    );
+  }
+
+  /* Specimen rows (Bible §5): names separated by a quiet interpunct, never chips. */
+  .specimen-row li:not(:last-child)::after {
+    content: "·";
+    margin-inline: calc(var(--spacing-within-1));
+    color: var(--color-ivory-30);
+  }
+}

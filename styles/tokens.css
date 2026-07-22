@@ -39,6 +39,8 @@
   --spacing-thought: 64px;
   --spacing-passage: 104px;
   --spacing-scene: 168px;
+  --spacing-safe: clamp(24px, 5vw, 96px);
+  --spacing-hit: 44px;
 
   /* Containers (Bible §4 — three containers; full-bleed needs no token) */
   --container-narrative: 680px;
@@ -125,6 +127,7 @@
   --z-attendant: 30;
   --z-overlay: 40;
   --z-loader: 50;
+  --z-grain: 60;
 
   /* Glass materials (Bible §2) */
   --glass-smoke-surface: rgb(10 10 12 / 0.65);
@@ -137,8 +140,10 @@
   --glow-bloom: rgb(255 201 139 / 0.25);
   --glow-lift: rgb(242 239 233 / 0.08);
   --glow-pulse: rgb(143 163 184 / 0.06);
+  --glow-radius: 48px;
 
   /* Film grain (Bible §2 — one grain, everywhere, forever) */
   --grain-opacity: 0.025;
   --grain-opacity-deep: 0.04;
+  --grain-tile: 160px;
 }

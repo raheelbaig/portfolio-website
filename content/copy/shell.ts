@@ -7,6 +7,7 @@
 export const shell = {
   skipToFilm: "Skip to the film",
   navLabel: "Chapters",
+  menuLabel: "Menu",
   /** Placeholder until Scene 1–12 components exist. */
   filmPlaceholder: "The film begins here.",
   navPlaceholder: "Navigation arrives with the film.",
