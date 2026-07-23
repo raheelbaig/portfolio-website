@@ -1,9 +1,18 @@
 import { SceneGap } from "@/components/layout/scene-gap";
 import { AboutScene } from "@/components/scenes/about";
+import { AttendantScene } from "@/components/scenes/attendant";
+import { InvitationScene } from "@/components/scenes/invitation";
+import { ServicesScene } from "@/components/scenes/services";
 import { CareerScene } from "@/components/scenes/career";
 import { HeroScene } from "@/components/scenes/hero";
 import { InstrumentsScene } from "@/components/scenes/instruments";
+import { LoaderScene } from "@/components/scenes/loader";
 import { TurnScene } from "@/components/scenes/turn";
+import { WorldScene } from "@/components/scenes/world";
+import { CrewMount } from "@/experience/mount";
+import { nzh } from "@/content/projects/nzh";
+import { salhub } from "@/content/projects/salhub";
+import { strangerus } from "@/content/projects/strangerus";
 
 /**
  * The film — one route, twelve scenes and a coda (Architecture §3).
@@ -14,6 +23,8 @@ import { TurnScene } from "@/components/scenes/turn";
 export default function FilmPage() {
   return (
     <>
+      <LoaderScene />
+      <CrewMount />
       <HeroScene />
       <SceneGap size="scene" />
       <AboutScene />
@@ -24,9 +35,17 @@ export default function FilmPage() {
       <SceneGap size="scene" />
       <TurnScene />
       <SceneGap size="scene" />
-      {/* Scenes 7–9 (the three worlds) mount here once the real project
-          briefs and screenshots land in content/projects/ and
-          public/worlds/ — see components/scenes/world.tsx. */}
+      <WorldScene project={salhub} />
+      <SceneGap size="scene" />
+      <WorldScene project={strangerus} />
+      <SceneGap size="scene" />
+      <WorldScene project={nzh} />
+      <SceneGap size="scene" />
+      <ServicesScene />
+      <SceneGap size="scene" />
+      <AttendantScene />
+      <SceneGap size="scene" />
+      <InvitationScene />
     </>
   );
 }

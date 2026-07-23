@@ -15,4 +15,6 @@ export const worldCopy = {
     stack: "Stack",
     decisions: "Decisions",
   },
+  /** The way home from a deep cut. */
+  backToFilm: "Return to the film",
 } as const;

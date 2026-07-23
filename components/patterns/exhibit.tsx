@@ -22,11 +22,14 @@ export function Exhibit({
   framing,
   caption,
   priority = false,
+  crewRole,
 }: {
   asset: ExhibitAsset;
   framing: "bleed" | "pane";
   caption?: string;
   priority?: boolean;
+  /** Registration target for the Crew's camera work (parallax, push). */
+  crewRole?: string;
 }) {
   const image = (
     <Image
@@ -36,19 +39,24 @@ export function Exhibit({
       height={asset.height}
       priority={priority}
       sizes={framing === "bleed" ? "100vw" : "(min-width: 768px) 920px, 100vw"}
-      className={
-        framing === "bleed"
-          ? "h-auto w-full"
-          : "edge-light h-auto w-full rounded-pane"
-      }
+      className="h-auto w-full"
     />
   );
+  /* Every exhibit clips its own frame so the Crew's camera work on the img
+     (establishing push, close-up drift) stays inside the shot. Statically
+     the image simply fills the frame — the enhancement has no resting cost. */
+  const frame =
+    framing === "bleed" ? (
+      <div className="overflow-hidden">{image}</div>
+    ) : (
+      <div className="edge-light overflow-hidden rounded-pane">{image}</div>
+    );
   if (caption === undefined) {
-    return <figure>{image}</figure>;
+    return <figure data-crew={crewRole}>{frame}</figure>;
   }
   return (
-    <figure className="flex flex-col gap-within-2">
-      {image}
+    <figure data-crew={crewRole} className="flex flex-col gap-within-2">
+      {frame}
       <Editorial as="figcaption" size="body" tone="whisper">
         {caption}
       </Editorial>

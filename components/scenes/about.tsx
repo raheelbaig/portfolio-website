@@ -1,6 +1,6 @@
 import { Frame } from "@/components/layout/frame";
 import { Section } from "@/components/layout/section";
-import { Stack } from "@/components/layout/stack";
+import { Portrait } from "@/components/patterns/portrait";
 import {
   Editorial,
   Technical,
@@ -35,31 +35,41 @@ export function AboutScene() {
            * the shot re-blocks vertically (Architecture §14): figure above,
            * voice below — same order a camera would find them.
            */}
-          <div className="md:col-span-4">
-            <div
-              aria-hidden="true"
-              className="portrait-void mx-auto aspect-(--portrait-aspect) w-(--portrait-conversational-width) max-w-full"
-            />
+          {/*
+           * The editorial spread: the figure and his record on the left page,
+           * the voice on the right. The fact sits beneath the portrait like a
+           * museum label — the eye lands on the face, drops to the record,
+           * then crosses to the monologue and reads down.
+           */}
+          <div
+            data-crew="about-portrait"
+            className="flex flex-col items-center gap-within-2 md:col-span-4"
+          >
+            <Portrait scale="conversational" />
+            <dl
+              data-crew="about-fact"
+              className="flex flex-col items-center gap-within-1"
+            >
+              <dt className="sr-only">
+                <TechnicalLabel>{about.fact.label}</TechnicalLabel>
+              </dt>
+              <Technical variant="value" tone="whisper" as="dd">
+                {about.fact.value}
+              </Technical>
+            </dl>
           </div>
 
           <div className="md:mt-0 mt-thought md:col-span-7 md:col-start-6">
-            <Stack gap="thought">
-              <Stack gap="within-3" as="div">
-                {about.monologue.map((line) => (
-                  <Editorial key={line} size="line" tone="full">
-                    {line}
-                  </Editorial>
-                ))}
-              </Stack>
-              <dl className="flex flex-col gap-within-1">
-                <dt className="sr-only">
-                  <TechnicalLabel>{about.fact.label}</TechnicalLabel>
-                </dt>
-                <Technical variant="value" tone="whisper" as="dd">
-                  {about.fact.value}
-                </Technical>
-              </dl>
-            </Stack>
+            <div
+              data-crew="about-monologue"
+              className="flex flex-col gap-within-3"
+            >
+              {about.monologue.map((line) => (
+                <Editorial key={line} size="line" tone="full">
+                  {line}
+                </Editorial>
+              ))}
+            </div>
           </div>
         </div>
       </Frame>

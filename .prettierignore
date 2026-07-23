@@ -4,5 +4,6 @@ package-lock.json
 public
 styles/tokens.css
 docs
+content/projects/*.md
 AGENTS.md
 CLAUDE.md

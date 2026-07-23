@@ -52,6 +52,127 @@ body::after {
   box-shadow: 0 0 0 3px var(--glow-bloom);
 }
 
+/*
+ * Scene 1 — the loader (see components/scenes/loader.tsx). Pure CSS so the
+ * overture plays with or without JavaScript and can never strand a visitor.
+ * Timeline (seconds are choreography, durations/eases are tokens):
+ *   0.00–0.95  darkness; the line breathes once; the name inhales
+ *   0.95       the whisper releases
+ *   1.00–1.90  the aperture opens (panels part on the glide)
+ *   1.95       the veil is gone entirely
+ */
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-loader);
+  pointer-events: none;
+  animation: loader-done 0s linear 1.95s forwards;
+}
+.loader-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50.1%;
+  background: var(--color-depth-black);
+}
+.loader-panel-top {
+  top: 0;
+  transform-origin: top;
+  animation: loader-part var(--duration-cinematic) var(--ease-glide) 1s forwards;
+}
+.loader-panel-bottom {
+  bottom: 0;
+  transform-origin: bottom;
+  animation: loader-part var(--duration-cinematic) var(--ease-glide) 1s forwards;
+}
+.loader-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-within-2);
+  animation: loader-release var(--duration-passage) var(--ease-glide) 0.95s
+    forwards;
+}
+.loader-line {
+  display: block;
+  width: var(--spacing-thought);
+  height: 1px;
+  background: var(--color-ivory-100);
+  box-shadow: 0 0 var(--glow-radius) var(--glow-lift);
+  animation: loader-breathe 1s var(--ease-glide) both;
+}
+.loader-name {
+  animation: loader-inhale 1.1s var(--ease-glide) both;
+}
+@keyframes loader-breathe {
+  0% {
+    opacity: 0.15;
+    transform: scaleX(0.55);
+  }
+  45% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  68% {
+    opacity: 0.45;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes loader-inhale {
+  from {
+    opacity: 0;
+    letter-spacing: var(--tracking-technical);
+  }
+  35% {
+    opacity: 0.9;
+  }
+  to {
+    opacity: 0.9;
+    letter-spacing: var(--tracking-inhale);
+  }
+}
+@keyframes loader-release {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes loader-part {
+  to {
+    transform: scaleY(0);
+  }
+}
+@keyframes loader-done {
+  to {
+    visibility: hidden;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .loader {
+    display: none;
+  }
+}
+
+/*
+ * The Crew's stage (Architecture §8): one persistent canvas, fixed behind
+ * the DOM — the DOM composites over it. When the Crew is on, the hero's
+ * DOM key light hands off to the canvas key light (same state, richer
+ * medium); without JS the CSS gradient below remains the designed cut.
+ */
+.stage-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-canvas);
+  pointer-events: none;
+}
+html[data-crew="on"] #hero .stage-keylight {
+  background-image: none;
+}
+
 @layer components {
   /*
    * The attention grammar (Bible §6/§10): the world notices you at Instant
@@ -145,7 +266,7 @@ body::after {
       var(--color-stage-black) 70%
     );
   }
-  .stage-world-zh {
+  .stage-world-nzh {
     /* Cool, exact, international: the crispest engineered light. */
     background-image: linear-gradient(
       color-mix(
@@ -157,6 +278,52 @@ body::after {
     );
   }
 
+  /* Scene 11 — the attendant's lantern: a small presence made of the site's
+     own light-language, carrying the warm-cool pulse promised on Scene 5's
+     intelligence group. The pulse ANIMATION is Crew work; at rest it simply
+     glows (the one strong glow of its viewport). */
+  .attendant-lantern {
+    background-image: radial-gradient(
+      circle at 38% 32%,
+      color-mix(
+        in oklab,
+        var(--color-instrument-blue) 45%,
+        var(--color-stage-black)
+      ),
+      var(--color-stage-black) 78%
+    );
+    box-shadow:
+      0 0 var(--glow-radius) var(--glow-pulse),
+      0 0 calc(var(--glow-radius) / 3) var(--glow-bloom);
+  }
+
+  /* The portrait's frame: the cutout must inhabit the dark, never read as a
+     sticker (Bible §8). The dissolve is centered high so the hard-cropped
+     torso bottom feathers longest into the stage — the figure emerges from
+     darkness rather than ending. (Interim runtime mask; the asset pipeline
+     may bake it later.) */
+  .portrait-frame {
+    -webkit-mask-image: radial-gradient(
+      ellipse 84% 78% at 50% 34%,
+      black 52%,
+      transparent 94%
+    );
+    mask-image: radial-gradient(
+      ellipse 84% 78% at 50% 34%,
+      black 52%,
+      transparent 94%
+    );
+  }
+
+  /* The portrait's grade (Bible §7/§8): the fictional key made physical on
+     the figure — a faint warm presence from the high-left key, and the thin
+     cool rim (Instrument Blue at whisper intensity) parting the opposite
+     shoulder from Depth Black. Static filters; nothing animates them. */
+  .portrait-grade {
+    filter: drop-shadow(-10px -6px 26px rgb(232 168 85 / 0.1))
+      drop-shadow(14px 8px 24px rgb(143 163 184 / 0.11));
+  }
+
   /* Scene 2 — the portrait placeholder: a body of faint light where the
      figure will stand. The real graded cutout replaces this in the asset
      milestone; the reserved box (aspect + scale tokens) must not change. */
@@ -166,6 +333,34 @@ body::after {
       var(--glow-lift),
       transparent 78%
     );
+  }
+
+  /* Scene 5 — the bench (Bible §5): instruments are "grouped by proximity
+     and SHARED POOL OF LIGHT" — each cluster sits in its own quiet pool of
+     worklight; and "on attention, a skill lifts one step in brightness —
+     nothing more" (the Bible's exact interaction, verbatim). */
+  [data-crew="instruments-cluster"] {
+    position: relative;
+  }
+  [data-crew="instruments-cluster"]::before {
+    content: "";
+    position: absolute;
+    inset: calc(-1 * var(--spacing-within-3)) calc(-1 * var(--spacing-block));
+    background-image: radial-gradient(
+      ellipse 75% 85% at 35% 25%,
+      var(--glow-lift),
+      transparent 72%
+    );
+    pointer-events: none;
+  }
+  [data-crew="instruments-cluster"] li {
+    transition:
+      color var(--duration-gesture) var(--ease-glide),
+      opacity var(--duration-gesture) var(--ease-glide);
+  }
+  [data-crew="instruments-cluster"] li:hover {
+    color: var(--color-ivory-100);
+    transition-duration: var(--duration-instant);
   }
 
   /* Specimen rows (Bible §5): names separated by a quiet interpunct, never chips. */

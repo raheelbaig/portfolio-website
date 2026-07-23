@@ -237,23 +237,22 @@ export const breakpoint = {
  * the type system, no intermediate scales — the gap is the meaning.
  */
 export const portrait = {
-  /** Master aspect (width / height) reserved for the transparent cutout. */
-  aspect: "3 / 4",
+  /** Master aspect of the real cutout (public/portrait/hero.png): square, chest-up. */
+  aspect: "1 / 1",
   /**
-   * Monumental scale (hero, invitation): the figure at ~68% of frame height
+   * Monumental scale (hero, invitation): the figure at ~62% of frame height
    * (sanctioned range 60–75%), never wider than the frame's safe area.
-   * Expressed as a width so aspect-ratio can derive height on any viewport.
+   * Square master: width = height.
    */
-  "monumental-width":
-    "min(calc(68svh * (3 / 4)), calc(100vw - (2 * var(--spacing-safe))))",
+  "monumental-width": "min(62svh, calc(100vw - (2 * var(--spacing-safe))))",
   /**
-   * Conversational scale (About): closer, chest-up, one-third position.
-   * The Bible fixes only the gaps between scales; ~52% of frame height sits
-   * clearly between Monumental (60–75%) and Distant (<15%).
+   * Conversational scale (About): closer, one-third position. The Bible
+   * fixes only the gaps between scales; ~46% of frame height sits clearly
+   * between Monumental (60–75%) and Distant (<15%).
    */
-  "conversational-width": "calc(52svh * (3 / 4))",
+  "conversational-width": "46svh",
   /** Distant scale (the road): a figure at the end of the path, <15% of frame height. */
-  "distant-width": "calc(13svh * (3 / 4))",
+  "distant-width": "12svh",
 } as const;
 
 /**

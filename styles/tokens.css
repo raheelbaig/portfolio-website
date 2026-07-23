@@ -124,10 +124,10 @@
   --stagger-glance: 75ms;
 
   /* Portrait scales (Bible §8 — three sanctioned scales, no in-betweens) */
-  --portrait-aspect: 3 / 4;
-  --portrait-monumental-width: min(calc(68svh * (3 / 4)), calc(100vw - (2 * var(--spacing-safe))));
-  --portrait-conversational-width: calc(52svh * (3 / 4));
-  --portrait-distant-width: calc(13svh * (3 / 4));
+  --portrait-aspect: 1 / 1;
+  --portrait-monumental-width: min(62svh, calc(100vw - (2 * var(--spacing-safe))));
+  --portrait-conversational-width: 46svh;
+  --portrait-distant-width: 12svh;
 
   /* Z stack (Architecture §8) */
   --z-canvas: 0;

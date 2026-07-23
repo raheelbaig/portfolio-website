@@ -22,7 +22,7 @@ const exhibitSchema = z.object({
 });
 
 export const projectSchema = z.object({
-  id: z.enum(["salhub", "strangerus", "zh"]),
+  id: z.enum(["salhub", "strangerus", "nzh"]),
   title: z.string().min(2).max(24),
   /** One line of positioning: what it is, for whom — no adjectives for their own sake. */
   positioning: sentence,

@@ -1,3 +1,5 @@
+import Link from "next/link";
+import type { Route } from "next";
 import { Monumental, Technical } from "@/components/primitives/voices";
 
 /**
@@ -11,23 +13,39 @@ import { Monumental, Technical } from "@/components/primitives/voices";
  * darkness stands above the name, so the door is mostly threshold —
  * somewhere to step, not something to read.
  *
+ * Now that the worlds exist, a doorway is an anchor into its world; the
+ * accessible name is the Bible's canonical CTA form ("Enter SalHub").
+ * The approach light (brightening on nearness) is Crew work, not CSS hover.
+ *
  * WHEN: Scene 6's resolved gateways and the post-trilogy triptych recall.
  * WHEN NOT: anywhere content is presented — inside worlds, projects appear
  * as exhibits, never doors.
- *
- * Static milestone: not yet a link — the worlds don't exist to enter, and a
- * door that goes nowhere must not pretend otherwise. The worlds milestone
- * turns it into an anchor and gives it the approach light ("Enter SalHub").
  */
-export function Doorway({ number, name }: { number: string; name: string }) {
+export function Doorway({
+  number,
+  name,
+  href,
+  actionLabel,
+}: {
+  number: string;
+  name: string;
+  /** Anchor of the world this door opens into (e.g. "#salhub"). */
+  href: string;
+  /** The Bible's CTA verb for thresholds ("Enter"), from the Script. */
+  actionLabel: string;
+}) {
   return (
-    <article className="material-filament edge-light flex flex-col justify-end gap-within-2 rounded-pane p-within-3 pt-scene">
+    <Link
+      href={href as Route}
+      aria-label={`${actionLabel} ${name}`}
+      className="material-filament edge-light light-transition flex h-full flex-col justify-end gap-within-2 rounded-pane p-within-3 pt-scene"
+    >
       <Technical variant="value" tone="whisper" as="p">
         {number}
       </Technical>
       <Monumental variant="distant" as="h3">
         {name}
       </Monumental>
-    </article>
+    </Link>
   );
 }

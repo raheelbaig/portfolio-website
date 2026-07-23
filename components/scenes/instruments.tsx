@@ -45,7 +45,12 @@ export function InstrumentsScene() {
       <Frame>
         <div className="flex flex-col gap-thought md:grid md:grid-cols-12 md:gap-x-within-3 md:gap-y-thought">
           {instrumentGroups.map((group) => (
-            <div key={group.id} className={clusterPlacement[group.id]}>
+            <div
+              key={group.id}
+              data-crew="instruments-cluster"
+              data-group={group.id}
+              className={clusterPlacement[group.id]}
+            >
               <Stack gap="within-1" as="ul" aria-label={group.name}>
                 {group.instruments.map((instrument) => (
                   <Technical
@@ -65,7 +70,10 @@ export function InstrumentsScene() {
           ))}
 
           {/* The one editorial contrast, off to one side — where the hands would be. */}
-          <div className="md:col-span-5 md:col-start-2">
+          <div
+            data-crew="instruments-line"
+            className="md:col-span-5 md:col-start-2"
+          >
             <Editorial size="line" tone="full">
               {instrumentsLine}
             </Editorial>

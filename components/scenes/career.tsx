@@ -1,4 +1,5 @@
 import { Divider } from "@/components/primitives/divider";
+import { Portrait } from "@/components/patterns/portrait";
 import { Frame } from "@/components/layout/frame";
 import { Section } from "@/components/layout/section";
 import { Editorial, Technical } from "@/components/primitives/voices";
@@ -44,11 +45,18 @@ export function CareerScene() {
         <div className="md:grid md:grid-cols-12 md:items-end md:gap-x-within-3">
           <div className="md:col-span-10">
             {/* The road: drawn once, horizontal, only where the frame is wide. */}
-            <div aria-hidden="true" className="hidden md:block">
+            <div
+              aria-hidden="true"
+              data-crew="career-road"
+              className="hidden md:block"
+            >
               <Divider />
             </div>
 
-            <ol className="md:pl-0 flex flex-col gap-thought border-l border-ivory-12 pl-within-3 md:grid md:grid-cols-5 md:gap-x-within-3 md:border-l-0">
+            <ol
+              data-crew="career-waypoints"
+              className="md:pl-0 flex flex-col gap-thought border-l border-ivory-12 pl-within-3 md:grid md:grid-cols-5 md:gap-x-within-3 md:border-l-0"
+            >
               {journey.map((waypoint, index) => {
                 const tone = waypointTone(index, count);
                 const isNow = index === count - 1;
@@ -95,11 +103,11 @@ export function CareerScene() {
            * Wide frames only; the vertical re-block ends on the present
            * waypoint instead.
            */}
-          <div className="hidden md:col-span-2 md:block md:justify-self-end">
-            <div
-              aria-hidden="true"
-              className="portrait-void aspect-(--portrait-aspect) w-(--portrait-distant-width)"
-            />
+          <div
+            data-crew="career-portrait"
+            className="hidden md:col-span-2 md:block md:justify-self-end"
+          >
+            <Portrait scale="distant" />
           </div>
         </div>
       </Frame>

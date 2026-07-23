@@ -2,6 +2,7 @@ import { Frame } from "@/components/layout/frame";
 import { Section } from "@/components/layout/section";
 import { StageBackground } from "@/components/layout/stage-background";
 import { Doorway } from "@/components/patterns/doorway";
+import { Portrait } from "@/components/patterns/portrait";
 import { Editorial } from "@/components/primitives/voices";
 import { turn } from "@/content/copy/turn";
 import { worlds } from "@/content/projects";
@@ -40,6 +41,7 @@ export function TurnScene() {
           {/* 1 — Convergence: the bench's lights, falling toward the point below. */}
           <div
             aria-hidden="true"
+            data-crew="turn-convergence"
             className="flex items-start justify-center gap-block"
           >
             <div className="h-within-3 w-px bg-ivory-30 opacity-60" />
@@ -54,46 +56,64 @@ export function TurnScene() {
               aria-hidden="true"
               className="inset-x-0 absolute top-1/3 hidden md:block"
             >
-              <div className="h-px w-full bg-ivory-12" />
+              <div
+                data-crew="turn-thread"
+                className="h-px w-full bg-ivory-12"
+              />
             </div>
             <div
               aria-hidden="true"
               className="inset-x-0 absolute top-2/3 hidden md:block"
             >
-              <div className="mx-auto h-px w-2/3 bg-ivory-12" />
+              <div
+                data-crew="turn-thread"
+                className="mx-auto h-px w-2/3 bg-ivory-12"
+              />
             </div>
 
             <div
               aria-hidden="true"
               className="hidden md:col-span-2 md:col-start-1 md:block"
             >
-              <div className="material-smoke edge-light h-passage rounded-pane opacity-60" />
+              <div
+                data-crew="turn-fragment"
+                className="material-smoke edge-light h-passage rounded-pane opacity-60"
+              />
             </div>
             <div
               aria-hidden="true"
               className="hidden self-end md:col-span-2 md:col-start-3 md:block"
             >
-              <div className="material-smoke edge-light h-thought rounded-pane opacity-30" />
+              <div
+                data-crew="turn-fragment"
+                className="material-smoke edge-light h-thought rounded-pane opacity-30"
+              />
             </div>
 
-            <div className="relative md:col-span-4 md:col-start-5">
-              <div
-                aria-hidden="true"
-                className="portrait-void mx-auto aspect-(--portrait-aspect) w-(--portrait-conversational-width) max-w-full"
-              />
+            <div
+              data-crew="turn-portrait"
+              className="relative flex justify-center md:col-span-4 md:col-start-5"
+            >
+              <Portrait scale="conversational" />
             </div>
 
             <div
               aria-hidden="true"
               className="hidden self-start md:col-span-2 md:col-start-10 md:block"
             >
-              <div className="material-smoke edge-light h-passage rounded-pane opacity-60" />
+              <div
+                data-crew="turn-fragment"
+                className="material-smoke edge-light h-passage rounded-pane opacity-60"
+              />
             </div>
             <div
               aria-hidden="true"
               className="hidden self-end md:col-span-2 md:col-start-11 md:block"
             >
-              <div className="material-smoke edge-light h-block rounded-pane opacity-30" />
+              <div
+                data-crew="turn-fragment"
+                className="material-smoke edge-light h-block rounded-pane opacity-30"
+              />
             </div>
           </div>
 
@@ -104,12 +124,18 @@ export function TurnScene() {
 
           {/* 4 — The doorways, resolved out of the structure. */}
           <ul
+            data-crew="turn-doorways"
             aria-label={turn.doorwaysLabel}
             className="grid w-full gap-within-3 md:grid-cols-3"
           >
             {worlds.map((world) => (
               <li key={world.id}>
-                <Doorway number={world.number} name={world.name} />
+                <Doorway
+                  number={world.number}
+                  name={world.name}
+                  href={`#${world.id}`}
+                  actionLabel={turn.doorwayAction}
+                />
               </li>
             ))}
           </ul>

@@ -11,4 +11,6 @@ export const turn = {
   thesis: "I build the world around the work.",
   /** AT-only label for the doorway group. */
   doorwaysLabel: "The three worlds",
+  /** The Bible's canonical threshold verb (§9: "Enter SalHub"). */
+  doorwayAction: "Enter",
 } as const;

@@ -51,7 +51,8 @@ export default function RootLayout({
           {shell.skipToFilm}
         </a>
         <NavigationShell />
-        <main id="film" className="flex-1">
+        {/* The film plane sits above the Crew's canvas (z-canvas < z-film). */}
+        <main id="film" className="relative z-(--z-film) flex-1">
           {children}
         </main>
         <FooterShell />

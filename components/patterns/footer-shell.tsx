@@ -1,27 +1,25 @@
 import { Frame } from "@/components/layout/frame";
 import { Technical } from "@/components/primitives/voices";
 import { shell } from "@/content/copy/shell";
+import { invitation } from "@/content/copy/invitation";
 import { site } from "@/content/site";
 
 /**
- * The FooterShell — the coda's slim, dark band (Storyboard: "credits, not
- * clutter").
+ * The Coda — "After the Credits" (Storyboard). A slim, dark band in the
+ * technical voice: name, year, the quiet essentials, and one final line of
+ * dry, confident character. Credits, not clutter — set exactly, aligned
+ * perfectly: the last thing juries and peers inspect.
  *
- * WHY: the last thing juries and peers inspect, kept flawless. Structure
- * ships now; the final line of dry character, email, and socials arrive
- * with the Coda milestone from the Script.
+ * Static, minimal, evenly dim. Films end.
  *
- * WHEN: mounted once, by the root layout.
- * WHEN NOT: never grows link farms, sitemaps, or newsletter forms —
- * anything a footer needs longer than two seconds of glance belongs
- * in a scene.
+ * TODO(raheel): socials join the essentials once filled in content/site.ts.
  */
 export function FooterShell() {
   const year = new Date().getFullYear();
   return (
-    <footer className="border-t border-ivory-12">
+    <footer className="relative z-(--z-film) border-t border-ivory-12">
       <Frame>
-        <div className="flex min-h-hit flex-wrap items-center justify-between gap-within-2 py-within-3">
+        <div className="flex min-h-hit flex-wrap items-center justify-between gap-x-thought gap-y-within-2 py-within-3">
           <p>
             <Technical variant="label" tone="whisper">
               {site.name}
@@ -35,8 +33,16 @@ export function FooterShell() {
               {year}
             </Technical>
           </p>
+          <a
+            href={invitation.href}
+            className="light-transition rounded-technical hover:brightness-125"
+          >
+            <Technical variant="plain" tone="whisper">
+              {site.email}
+            </Technical>
+          </a>
           <Technical variant="plain" tone="whisper" as="p">
-            {shell.footerPlaceholder}
+            {shell.credits}
           </Technical>
         </div>
       </Frame>
