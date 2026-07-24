@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { FooterShell } from "@/components/patterns/footer-shell";
 import { NavigationShell } from "@/components/patterns/navigation-shell";
@@ -9,19 +9,31 @@ import { siteUrl } from "@/lib/env";
 import { color } from "@/styles/tokens";
 
 /*
- * The two families of the film (Bible §3). Archivo stands in for the
- * Söhne/Neue Haas-class grotesk until a licensing decision; JetBrains Mono
- * is named by the Bible for the Technical voice. Self-hosted via next/font:
- * subsetted, preloaded, with metric-compatible fallbacks (Architecture §10).
+ * The three voices (01 §5.1) — serif = cinema, grotesk = the human connective
+ * voice, mono = engineering. The pairing itself expresses the brand.
+ *
+ * All three are open-licensed stand-ins for the classes the brand system names;
+ * the licensed families (Reckless/Canela-class display, Söhne-class grotesk)
+ * are still an open decision — see 12 §5.14. Only the *class* is load-bearing,
+ * so swapping a family later is a one-line change here.
+ *
+ * Self-hosted by next/font: subsetted to latin, preloaded, served same-origin,
+ * with `display: swap` so text is never invisible while a face loads.
  */
-const grotesk = Archivo({
-  variable: "--font-src-grotesk",
+const marquee = Playfair_Display({
+  variable: "--font-src-marquee",
   subsets: ["latin"],
   display: "swap",
 });
 
-const technical = JetBrains_Mono({
-  variable: "--font-src-technical",
+const plate = Inter({
+  variable: "--font-src-plate",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const consoleVoice = JetBrains_Mono({
+  variable: "--font-src-console",
   subsets: ["latin"],
   display: "swap",
 });
@@ -32,8 +44,9 @@ export const metadata: Metadata = {
   description: site.tagline,
 };
 
+/* The room itself, so the browser chrome joins the world rather than framing it. */
 export const viewport: Viewport = {
-  themeColor: color["stage-black"],
+  themeColor: color["night-800"],
 };
 
 export default function RootLayout({
@@ -42,7 +55,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${grotesk.variable} ${technical.variable}`}>
+    <html
+      lang="en"
+      className={`${marquee.variable} ${plate.variable} ${consoleVoice.variable}`}
+    >
       <body className="flex min-h-dvh flex-col">
         <a
           href="#film"

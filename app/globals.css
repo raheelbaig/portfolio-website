@@ -2,27 +2,25 @@
 @import "../styles/tokens.css";
 
 /*
- * Font tokens reference the next/font variables injected on <html>
- * (app/layout.tsx), so they must be declared inline — values resolve at
- * runtime, not build time. The two voices of the film:
- *   grotesk   — Monumental + Editorial (one family, two optical behaviors)
- *   technical — the mono instrumentation voice
+ * The typographic voices are declared in styles/tokens.css (generated from
+ * styles/tokens.ts). They resolve the --font-src-* variables that next/font
+ * injects on <html> in app/layout.tsx.
  */
-@theme inline {
-  --font-*: initial;
-  --font-grotesk: var(--font-src-grotesk), ui-sans-serif, system-ui, sans-serif;
-  --font-technical: var(--font-src-technical), ui-monospace, monospace;
-}
 
-/* Dark mode only — the one-light dark world IS the brand (Architecture §17). */
+/* Dark mode only — the one-light dark world IS the brand (01 §3). */
 :root {
   color-scheme: dark;
 }
 
+/*
+ * The room (01 §4.1): night-800 is the page field, bone-100 the ink, Plate the
+ * reading voice. Never pure black — black reads as absence, night reads as a
+ * room with the lights down.
+ */
 body {
-  background-color: var(--color-stage-black);
-  color: var(--color-ivory-100);
-  font-family: var(--font-grotesk);
+  background-color: var(--color-night-800);
+  color: var(--color-bone-100);
+  font-family: var(--font-plate);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -43,13 +41,22 @@ body::after {
 }
 
 /*
- * Focus (Bible §10): lit with the same dignity as hover — a Filament edge
- * plus an Ivory ring, never the browser default, never suppressed.
+ * Focus (01 §15, §22): lit with the same dignity as hover — a bone ring and a
+ * warm Sol bloom. Never the browser default, never suppressed, and never a
+ * geometry change: focus is a light state like everything else here.
  */
 :focus-visible {
-  outline: 1px solid var(--color-ivory-100);
+  outline: 1px solid var(--color-bone-100);
   outline-offset: 2px;
   box-shadow: 0 0 0 3px var(--glow-bloom);
+}
+
+/*
+ * Selection is a light state too, not a system-blue rectangle.
+ */
+::selection {
+  background-color: var(--glow-bloom);
+  color: var(--color-bone-100);
 }
 
 /*
@@ -169,15 +176,146 @@ body::after {
   z-index: var(--z-canvas);
   pointer-events: none;
 }
-html[data-crew="on"] #hero .stage-keylight {
+html[data-crew="on"] #hero .hero-keylight {
   background-image: none;
 }
 
 @layer components {
+  /* ══════════════════════════════════════════════════════════════════════
+     NOCTURNE (V2) — the shared material and light vocabulary.
+     Everything below this fence is the foundation; everything after the
+     second fence is V1 and retires with the V1 sections.
+     ══════════════════════════════════════════════════════════════════════ */
+
+  /*
+   * The three glass materials (01 §10). At most two per viewport — a review
+   * rule, enforced by these being the only three classes that exist.
+   *
+   * Smoke: the room stays visible behind it.
+   * Slate: opaque, for when content must be maximally legible.
+   * Signal: invitational surfaces only — CTA fields and doorways. The warm
+   *         tint is a promise of somewhere to go, so it is never decoration.
+   */
+  .glass-smoke {
+    background-color: var(--glass-smoke-surface);
+    backdrop-filter: blur(var(--blur-smoke));
+  }
+  .glass-slate {
+    background-color: var(--glass-slate-surface);
+  }
+  .glass-signal {
+    background-color: var(--glass-smoke-surface);
+    background-image: linear-gradient(
+      var(--glass-signal-tint),
+      var(--glass-signal-tint)
+    );
+    backdrop-filter: blur(var(--blur-smoke));
+  }
+
+  /*
+   * Borders are light catching an edge (01 §10): 1px hairline, with the top
+   * edge lit one step brighter because the key light is above. This is why
+   * the system needs no shadows — the edge already says which way is up.
+   */
+  .edge-lit {
+    border: 1px solid var(--glass-edge-rest);
+    border-top-color: var(--glass-edge-lit);
+  }
+
+  /*
+   * Ambient fill (01 §11): a 2–4% ink lift so pure dark never swallows form.
+   * The rig has one key light; this is the bounce.
+   */
+  .field-ambient {
+    background-image: linear-gradient(
+      rgb(244 241 234 / var(--light-ambient)),
+      transparent 60%
+    );
+  }
+
+  /*
+   * The corner vignette (01 §11) — one step toward night-900, which is what
+   * makes a flat page read as a lit room with edges.
+   */
+  .field-vignette {
+    background-image: radial-gradient(
+      ellipse 90% 70% at 50% 45%,
+      transparent 55%,
+      rgb(8 10 13 / var(--light-vignette))
+    );
+  }
+
+  /*
+   * The attention grammar (01 §15): the world notices you at Instant (120ms)
+   * and lets go of you at Gesture (240ms). That asymmetry is the "alive"
+   * signature. Apply to anything whose hover/focus response is a light state.
+   *
+   * Only light properties are listed — transform is absent on purpose, so an
+   * accidental hover-scale can never inherit a transition from here.
+   */
+  .light-response {
+    transition-property:
+      color, background-color, border-color, text-decoration-color, opacity,
+      filter, box-shadow;
+    transition-timing-function: var(--ease-glide);
+    transition-duration: var(--hover-out);
+  }
+  .light-response:hover,
+  .light-response:focus-visible {
+    transition-duration: var(--hover-in);
+  }
+
+  /*
+   * The Invitation (03 §7.1) — Signal Glass carrying the small practical Sol
+   * light. Its bloom is deliberately half the canonical glow radius: it is the
+   * second-brightest object in the frame and must never rival the key (03 §6).
+   */
+  .action-invitation {
+    box-shadow:
+      0 0 calc(var(--glow-radius) / 2) var(--glow-bloom),
+      inset 0 0 calc(var(--glow-radius) / 3) var(--glass-signal-tint);
+  }
+  .action-invitation:hover,
+  .action-invitation:focus-visible {
+    border-top-color: var(--color-sol-600);
+    filter: brightness(1.1);
+    box-shadow:
+      0 0 calc(var(--glow-radius) / 1.5) var(--glow-bloom),
+      inset 0 0 calc(var(--glow-radius) / 3) var(--glass-signal-tint);
+  }
+  .action-invitation:active {
+    filter: brightness(0.9);
+  }
+
+  /* The Quiet Action (03 §7.2) — no container; a thread of light beneath. */
+  .action-quiet {
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: var(--color-sol-600);
+    text-underline-offset: 6px;
+  }
+  .action-quiet:hover,
+  .action-quiet:focus-visible {
+    color: var(--color-bone-100);
+    text-decoration-color: var(--color-sol-400);
+  }
+  .action-quiet:active {
+    filter: brightness(0.9);
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     V1 — retires with the V1 sections. Nothing new may consume it.
+     Its colour, glow, grain and edge variables now resolve to NOCTURNE
+     values (see the legacy block in styles/tokens.ts), so the two systems
+     share one lighting model while the sections are replaced.
+     ══════════════════════════════════════════════════════════════════════ */
+
   /*
    * The attention grammar (Bible §6/§10): the world notices you at Instant
    * (120ms) and lets go of you at Gesture (240ms). Apply to any interactive
    * element whose hover/focus response is a light state.
+   *
+   * Carried into V2 unchanged — 01 §15 states the same law.
    */
   .light-transition {
     transition-property:
@@ -368,5 +506,253 @@ html[data-crew="on"] #hero .stage-keylight {
     content: "·";
     margin-inline: calc(var(--spacing-within-1));
     color: var(--color-ivory-30);
+  }
+}
+
+/*
+ * ═══════════════════════════════════════════════════════════════════════════
+ * SECTION 01 — HERO ("The Still Point").  docs/v2/03-hero.md
+ *
+ * Hero-only composition. Everything here is either a light layer of the one
+ * key-light rig (§6) or the geometry that puts the name across the chest (§2).
+ * Nothing in this block animates: the entrance, the idle and the dock are Crew
+ * work, and this is the held frame they enhance.
+ * ═══════════════════════════════════════════════════════════════════════════
+ */
+@layer components {
+  .hero {
+    /*
+     * The figure's box (03 §2.3, §3.5; 11 §3.4). One formula, one number per
+     * tier: `min(<tier>svh, 100vw − 2×margin)`. The `min()` is what makes the
+     * sizing width-anchored on narrow frames automatically — on a phone the
+     * width term always wins, so the figure fills the portrait frame instead
+     * of floating small in a shrunken desktop box (11 §3.4 reasoning).
+     */
+    --hero-figure-top: 8svh;
+    --hero-figure-size: min(56svh, 100vw - 2 * var(--spacing-frame));
+
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    min-height: 100svh;
+    flex-direction: column;
+    /* `clip`, not `hidden`: it contains the rotated light without creating a
+       scroll container that would break the Crew's future sticky dock. */
+    overflow: clip;
+  }
+
+  /* COLUMN — tablet portrait: the figure fills the width (11 §3.4). */
+  @media (min-width: 48rem) {
+    .hero {
+      --hero-figure-size: min(60svh, 100vw - 2 * var(--spacing-frame));
+    }
+  }
+  /* COMPACT — laptop / tablet landscape. */
+  @media (min-width: 64rem) {
+    .hero {
+      --hero-figure-size: min(58svh, 100vw - 2 * var(--spacing-frame));
+    }
+  }
+  /* STAGE — large laptop / desktop: full Monumental. */
+  @media (min-width: 90rem) {
+    .hero {
+      --hero-figure-size: min(62svh, 100vw - 2 * var(--spacing-frame));
+    }
+  }
+
+  /* ── The rig (03 §6) ──────────────────────────────────────────────────── */
+
+  .hero-rig {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /*
+   * The key light: warm, upper-left (~35% x, ~28% y), and a *beam* rather than
+   * a bulb — a focused core inside a broad halo, the falloff space rotated
+   * ~12° and elongated vertically. Rotating about the light's own position
+   * keeps the source where it was aimed while tilting its shape.
+   *
+   * This is floor (2) of 03 §11.4: what renders when the canvas shader is
+   * absent or the tier is too low for it. It is a designed state, not a
+   * fallback — the Hero must be complete with no WebGL and no JavaScript.
+   */
+  .hero-keylight {
+    position: absolute;
+    inset: 0;
+    transform: rotate(-12deg) scale(1.6);
+    transform-origin: 35% 28%;
+    background-image:
+      radial-gradient(
+        ellipse 26% 38% at 35% 28%,
+        var(--glow-bloom),
+        transparent 72%
+      ),
+      radial-gradient(
+        ellipse 58% 76% at 35% 28%,
+        color-mix(in oklab, var(--glow-bloom) 42%, transparent),
+        transparent 76%
+      );
+  }
+
+  /* ── The figure (03 §3) ───────────────────────────────────────────────── */
+
+  .hero-figure-layer {
+    position: absolute;
+    top: var(--hero-figure-top);
+    left: 50%;
+    z-index: 1;
+    width: var(--hero-figure-size);
+    height: var(--hero-figure-size);
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  /*
+   * The void behind the figure (03 §6): one step deeper than the room, so the
+   * edge-dissolve has somewhere to go. Without it the feathered edges fade
+   * into the same value they started from and the figure reads as a sticker.
+   */
+  .hero-void {
+    position: absolute;
+    inset: -18%;
+    background-image: radial-gradient(
+      ellipse 54% 48% at 50% 42%,
+      var(--color-night-900),
+      transparent 72%
+    );
+  }
+
+  .hero-figure {
+    position: absolute;
+    inset: 0;
+  }
+
+  /*
+   * The edge feather (03 §3.1). Centred high so the hard-cropped torso bottom
+   * feathers longest — the figure emerges from the darkness rather than
+   * ending in it. Interim: 12 §5.2 requires this baked into the master, and
+   * the mask retires the moment that asset ships.
+   */
+  .hero-figure-mask {
+    -webkit-mask-image: radial-gradient(
+      ellipse 84% 78% at 50% 34%,
+      black 52%,
+      transparent 94%
+    );
+    mask-image: radial-gradient(
+      ellipse 84% 78% at 50% 34%,
+      black 52%,
+      transparent 94%
+    );
+  }
+
+  /*
+   * The rig made physical on the figure: a faint warm presence from the high
+   * camera-left key, and the thin cool Ion rim parting the far shoulder from
+   * the dark. Static filters — the only runtime treatment the portrait gets,
+   * and never a drop shadow in the cast-shadow sense (01 §12).
+   */
+  .hero-figure-grade {
+    filter: drop-shadow(-10px -6px 26px rgb(242 180 92 / 0.1))
+      drop-shadow(14px 8px 24px rgb(132 167 184 / 0.11));
+  }
+
+  /* Designed absence: a body of faint light in the exact reserved box. */
+  .hero-figure-absent {
+    background-image: radial-gradient(
+      ellipse 60% 48% at 50% 34%,
+      var(--glow-lift),
+      transparent 78%
+    );
+  }
+
+  /* ── The dialogue plane (03 §2) ───────────────────────────────────────── */
+
+  /*
+   * z-2 puts the type in front of the torso while the head still reads above
+   * the name's cap height — "man and name, one object" (03 §2.5).
+   */
+  .hero-stage {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-inline: var(--spacing-frame);
+    padding-block-end: var(--spacing-5);
+  }
+
+  .hero-dialogue {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  /*
+   * REEL (11 §5.1): the CTAs stack, primary above secondary, at a comfortable
+   * width — never edge-to-edge, which reads as a form, not an invitation.
+   */
+  .hero-actions {
+    display: flex;
+    width: 100%;
+    max-width: 20rem;
+    flex-direction: column;
+    gap: var(--spacing-4);
+  }
+  @media (min-width: 48rem) {
+    .hero-actions {
+      width: auto;
+      max-width: none;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  /* ── The control strip (03 §2.3, §4.4) ────────────────────────────────── */
+
+  /*
+   * The cockpit line: exact facts left, the way onward right. A 1px hairline
+   * is light catching an edge (01 §10) — it is the strip's lit top edge, which
+   * is why depth needs no shadow here.
+   */
+  .hero-strip {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--spacing-4);
+    margin-block-start: var(--spacing-5);
+    border-block-start: 1px solid var(--glass-edge-rest);
+    padding-block-start: var(--spacing-3);
+  }
+
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-5);
+  }
+
+  /*
+   * `auto` start-margin, not `justify-content`, so the cue holds the right
+   * edge even while the metadata slot is empty pending the copy pass.
+   */
+  .hero-cue {
+    display: flex;
+    margin-inline-start: auto;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-2);
+  }
+
+  /* Drawn downward by the Crew (scaleY 0→1, origin top); present at rest. */
+  .hero-cue-line {
+    width: 1px;
+    height: var(--spacing-5);
+    background-color: var(--color-bone-25);
   }
 }

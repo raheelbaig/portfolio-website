@@ -4,9 +4,11 @@
  */
 
 @theme {
-  /* Closed vocabularies: the Bible's palette is the whole palette. */
+  /* Closed vocabularies: the framework defaults are removed, so an */
+  /* unlawful utility does not merely go unused — it does not exist. */
   --color-*: initial;
   --text-*: initial;
+  --font-*: initial;
   --leading-*: initial;
   --tracking-*: initial;
   --radius-*: initial;
@@ -18,35 +20,96 @@
   --animate-*: initial;
   --spacing-*: initial;
   --container-*: initial;
+  --breakpoint-*: initial;
 
-  /* Colors (Bible §2) */
-  --color-stage-black: #0A0A0C;
-  --color-depth-black: #050506;
-  --color-obsidian: #101013;
-  --color-ivory-100: #F2EFE9;
-  --color-ivory-60: #9C9994;
-  --color-ivory-30: #55534F;
-  --color-ivory-12: rgb(242 239 233 / 0.12);
-  --color-filament: #E8A855;
-  --color-filament-bloom: #FFC98B;
-  --color-instrument-blue: #8FA3B8;
+  /* Colour (01 §4) — cool room, warm light. The palette is closed. */
+  --color-night-900: #080A0D;
+  --color-night-800: #0B0E12;
+  --color-night-700: #12161C;
+  --color-night-600: #1A1F27;
+  --color-night-500: #252B35;
+  --color-bone-100: #F4F1EA;
+  --color-bone-70: #BDBBB4;
+  --color-bone-45: #87857F;
+  --color-bone-25: #4C4B47;
+  --color-sol-400: #F2B45C;
+  --color-sol-300: #F8CD8A;
+  --color-sol-600: #C98F3E;
+  --color-ion-400: #84A7B8;
+  --color-ion-600: #4A5E68;
+  --color-ember-danger: #C46A5A;
 
-  /* Spacing (Bible §4 — the seven lawful values) */
+  /* Within-component spacing (01 §7). Constant across tiers. */
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 16px;
+  --spacing-4: 24px;
+  --spacing-5: 40px;
+  --spacing-hit: 44px;
+
+  /* The frame (01 §6). Constant, so it is static — the measures read it. */
+  --spacing-frame: clamp(24px, 5vw, 112px);
+  --container-read: min(680px, 100% - 2 * var(--spacing-frame));
+  --container-panel: min(960px, 100% - 2 * var(--spacing-frame));
+
+  /* Radius (01 §9) — machined, not soft. */
+  --radius-precise: 3px;
+  --radius-glass: 14px;
+  --radius-round: 9999px;
+
+  /* No shadow scale: depth is layers of dark and steps of light (01 §12). */
+  /* One blur, for the one glass material (01 §10). */
+  --blur-smoke: 22px;
+
+  /* Motion (10 §2) — the glide is the only timed easing. */
+  --ease-glide: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Voices (01 §5.1). --font-src-* is injected by next/font in the layout. */
+  --font-marquee: var(--font-src-marquee), Georgia, 'Times New Roman', serif;
+  --font-plate: var(--font-src-plate), ui-sans-serif, system-ui, sans-serif;
+  --font-console: var(--font-src-console), ui-monospace, SFMono-Regular, monospace;
+
+  /* Leading and tracking by voice (01 §5.3). Constant across tiers. */
+  --leading-marquee: 1.02;
+  --leading-plate: 1.5;
+  --leading-plate-tight: 1.35;
+  --leading-console: 1.4;
+  --leading-data: 1;
+  --tracking-marquee: -0.015em;
+  --tracking-plate: 0em;
+  --tracking-console: 0.06em;
+  --tracking-console-value: 0em;
+
+  /* Tier boundaries (11 §2), in rem so they respect the user's font size. */
+  --breakpoint-column: 48rem;
+  --breakpoint-compact: 64rem;
+  --breakpoint-laptop: 80rem;
+  --breakpoint-stage: 90rem;
+  --breakpoint-cinema: 105rem;
+
+  /* ── V1 legacy. Retire with the V1 sections; nothing new may consume it. */
+  /* Names V2 already claimed are not re-declared here: the V1 utilities */
+  /* inherit the NOCTURNE values under the same variable names. */
+  --color-stage-black: #0B0E12;
+  --color-depth-black: #080A0D;
+  --color-obsidian: #12161C;
+  --color-ivory-100: #F4F1EA;
+  --color-ivory-60: #BDBBB4;
+  --color-ivory-30: #87857F;
+  --color-ivory-12: #252B35;
+  --color-filament: #F2B45C;
+  --color-filament-bloom: #F8CD8A;
+  --color-instrument-blue: #84A7B8;
   --spacing-within-1: 8px;
   --spacing-within-2: 16px;
   --spacing-within-3: 24px;
   --spacing-block: 40px;
-  --spacing-thought: 64px;
-  --spacing-passage: 104px;
-  --spacing-scene: 168px;
   --spacing-safe: clamp(24px, 5vw, 96px);
-  --spacing-hit: 44px;
-
-  /* Containers (Bible §4 — three containers; full-bleed needs no token) */
   --container-narrative: 680px;
   --container-instrument: 920px;
-
-  /* Type scale (Bible §3) */
+  --radius-technical: 2px;
+  --radius-pane: 12px;
+  --radius-attendant: 9999px;
   --text-technical-sm: 0.8125rem;
   --text-technical-sm--line-height: 1.4;
   --text-technical-sm--letter-spacing: 0.06em;
@@ -68,9 +131,6 @@
   --text-editorial-xl: 2.625rem;
   --text-editorial-xl--line-height: 1.5;
   --text-editorial-xl--letter-spacing: 0em;
-  --text-monumental-distant: 2.625rem;
-  --text-monumental-distant--line-height: 1.1;
-  --text-monumental-distant--letter-spacing: -0.02em;
   --text-monumental-close: clamp(2.25rem, 6vw, 8rem);
   --text-monumental-close--line-height: 1;
   --text-monumental-close--letter-spacing: -0.02em;
@@ -80,56 +140,73 @@
   --text-monumental-name: clamp(4rem, 13vw, 17rem);
   --text-monumental-name--line-height: 0.95;
   --text-monumental-name--letter-spacing: -0.02em;
-
-  /* Leading & tracking (Bible §3) */
+  --text-monumental-distant: 2.625rem;
+  --text-monumental-distant--line-height: 1.1;
+  --text-monumental-distant--letter-spacing: -0.01em;
   --leading-monumental: 0.975;
   --leading-editorial: 1.55;
   --leading-technical: 1.4;
-  --leading-data: 1;
   --tracking-monumental: -0.02em;
   --tracking-editorial: 0em;
   --tracking-technical: 0.06em;
   --tracking-inhale: 0.2em;
-
-  /* Radii (Bible §2 — one radius family) */
-  --radius-technical: 2px;
-  --radius-pane: 12px;
-  --radius-attendant: 9999px;
-
-  /* Shadows: none. Depth is layers of black (Bible §7). */
-
-  /* Glass blur (Bible §2 — Smoke Glass is the only blur in the world) */
-  --blur-smoke: 24px;
-
-  /* Motion (Bible §6 — the glide; springs and bounces do not exist) */
-  --ease-glide: cubic-bezier(0.22, 1, 0.36, 1);
-
-  /* Breakpoints (Architecture §14) */
-  --breakpoint-cinema: 1680px;
-  --breakpoint-sm: 40rem;
-  --breakpoint-md: 48rem;
-  --breakpoint-lg: 64rem;
-  --breakpoint-xl: 80rem;
-  --breakpoint-2xl: 96rem;
+  --font-grotesk: var(--font-src-plate), ui-sans-serif, system-ui, sans-serif;
+  --font-technical: var(--font-src-console), ui-monospace, SFMono-Regular, monospace;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
 }
 
-/* Non-utility tokens: consumed as CSS variables by the Set,
-   mirrored in TS for the Crew. */
+@theme inline {
+  /* Inlined, so each utility reads a runtime var the tiers re-declare. */
+
+  /* The grid gutter (11 §3.1). */
+  --spacing-gutter: var(--frame-gutter);
+
+  /* The rests — content, not slack. They re-block per tier (11 §3.2). */
+  --spacing-thought: var(--rest-thought);
+  --spacing-passage: var(--rest-passage);
+  --spacing-scene: var(--rest-scene);
+  --spacing-act: var(--rest-act);
+
+  /* Type scale — Marquee is fluid, Plate and Console step (11 §3.3). */
+  --text-console-sm: var(--step-console-sm);
+  --text-console-sm--line-height: 1.4;
+  --text-console-sm--letter-spacing: 0.06em;
+  --text-console: var(--step-console);
+  --text-console--line-height: 1.4;
+  --text-console--letter-spacing: 0.06em;
+  --text-plate-body: var(--step-plate-body);
+  --text-plate-body--line-height: 1.5;
+  --text-plate-body--letter-spacing: 0em;
+  --text-plate-lead: var(--step-plate-lead);
+  --text-plate-lead--line-height: 1.5;
+  --text-plate-lead--letter-spacing: 0em;
+  --text-plate-line: var(--step-plate-line);
+  --text-plate-line--line-height: 1.5;
+  --text-plate-line--letter-spacing: 0em;
+  --text-plate-line-lg: var(--step-plate-line-lg);
+  --text-plate-line-lg--line-height: 1.35;
+  --text-plate-line-lg--letter-spacing: 0em;
+  --text-plate-line-xl: var(--step-plate-line-xl);
+  --text-plate-line-xl--line-height: 1.35;
+  --text-plate-line-xl--letter-spacing: 0em;
+  --text-marquee-sm: var(--step-marquee-sm);
+  --text-marquee-sm--line-height: 1.02;
+  --text-marquee-sm--letter-spacing: -0.015em;
+  --text-marquee: var(--step-marquee);
+  --text-marquee--line-height: 1.02;
+  --text-marquee--letter-spacing: -0.015em;
+  --text-marquee-xl: var(--step-marquee-xl);
+  --text-marquee-xl--line-height: 1.02;
+  --text-marquee-xl--letter-spacing: -0.015em;
+}
+
+/* Non-utility tokens: read as CSS variables by the Set, mirrored in TS for the Crew. */
 :root {
-  /* Durations (Bible §6) */
-  --duration-instant: 120ms;
-  --duration-gesture: 240ms;
-  --duration-passage: 480ms;
-  --duration-cinematic: 900ms;
-  --stagger-glance: 75ms;
-
-  /* Portrait scales (Bible §8 — three sanctioned scales, no in-betweens) */
-  --portrait-aspect: 1 / 1;
-  --portrait-monumental-width: min(62svh, calc(100vw - (2 * var(--spacing-safe))));
-  --portrait-conversational-width: 46svh;
-  --portrait-distant-width: 12svh;
-
-  /* Z stack (Architecture §8) */
+  /* Layer stack, back to front (01 §14). */
   --z-canvas: 0;
   --z-film: 10;
   --z-nav: 20;
@@ -138,21 +215,149 @@
   --z-loader: 50;
   --z-grain: 60;
 
-  /* Glass materials (Bible §2) */
-  --glass-smoke-surface: rgb(10 10 12 / 0.65);
-  --glass-obsidian-surface: #101013;
-  --glass-filament-tint: rgb(232 168 85 / 0.05);
-  --glass-edge-rest: rgb(242 239 233 / 0.12);
-  --glass-edge-lit: rgb(242 239 233 / 0.30);
+  /* Glass (01 §10). Three materials, at most two per viewport. */
+  --glass-smoke-surface: rgb(11 14 18 / 0.65);
+  --glass-slate-surface: #12161C;
+  --glass-signal-tint: rgb(242 180 92 / 0.05);
+  --glass-edge-rest: #252B35;
+  --glass-edge-lit: rgb(189 187 180 / 0.28);
 
-  /* Glow (Bible §2 — one strong glow per viewport) */
-  --glow-bloom: rgb(255 201 139 / 0.25);
-  --glow-lift: rgb(242 239 233 / 0.08);
-  --glow-pulse: rgb(143 163 184 / 0.06);
+  /* Light (01 §11) — glow, ambient fill, vignette. */
+  --glow-bloom: rgb(248 205 138 / 0.22);
+  --glow-lift: rgb(244 241 234 / 0.07);
+  --glow-pulse: rgb(132 167 184 / 0.10);
   --glow-radius: 48px;
+  --light-ambient: 0.03;
+  --light-vignette: 0.16;
 
-  /* Film grain (Bible §2 — one grain, everywhere, forever) */
+  /* One film grain, everywhere, forever. Never animated (01 §16). */
   --grain-opacity: 0.025;
   --grain-opacity-deep: 0.04;
   --grain-tile: 160px;
+
+  /* Icons (01 §8) — 1.25px stroke, never filled. */
+  --icon-stroke: 1.25;
+  --icon-inline: 16px;
+  --icon-action: 20px;
+
+  /* Motion (10 §3). A motion picks a rung; nothing between rungs exists. */
+  --duration-instant: 120ms;
+  --duration-gesture: 240ms;
+  --duration-passage: 480ms;
+  --duration-cinematic: 900ms;
+  --duration-portrait: 1530ms;
+  --duration-swell: 2000ms;
+  --stagger-glance: 75ms;
+  --stagger-beat: 195ms;
+  /* State transitions: fast in, slow out — the 'alive' signature. */
+  --hover-in: 120ms;
+  --hover-out: 240ms;
+  /* Distance caps (10 §3.4). Cinematic motion is small motion. */
+  --offset-rise: 8px;
+  --offset-settle: 16px;
+  --offset-release: -20px;
+  --parallax-sm: 3%;
+  --parallax-md: 5%;
+  --parallax-lg: 7%;
+
+  /* Prose measure (01 §6.2). */
+  --measure-ch: 70ch;
+
+  /* ── Tier: REEL — the base block. Mobile-first (11 §2.2). */
+  --tier: reel;
+  --frame-columns: 4;
+  --frame-gutter: 16px;
+  --rest-thought: 48px;
+  --rest-passage: 64px;
+  --rest-scene: 96px;
+  --rest-act: 120px;
+  --step-console-sm: 12px;
+  --step-console: 13px;
+  --step-plate-body: 16px;
+  --step-plate-lead: 18px;
+  --step-plate-line: 20px;
+  --step-plate-line-lg: 26px;
+  --step-plate-line-xl: 30px;
+  --step-marquee-sm: clamp(34px, 5vw, 48px);
+  --step-marquee: clamp(36px, 9vw, 72px);
+  --step-marquee-xl: clamp(44px, 13vw, 80px);
+}
+
+/* ── Tier: COLUMN — ≥ 768px ── */
+@media (min-width: 48rem) {
+  :root {
+    --tier: column;
+    --frame-columns: 8;
+    --frame-gutter: 16px;
+    --rest-thought: 56px;
+    --rest-passage: 80px;
+    --rest-scene: 112px;
+    --rest-act: 160px;
+    --step-console-sm: 13px;
+    --step-console: 14px;
+    --step-plate-body: 16px;
+    --step-plate-lead: 19px;
+    --step-plate-line: 22px;
+    --step-plate-line-lg: 28px;
+    --step-plate-line-xl: 34px;
+    --step-marquee-sm: clamp(44px, 6vw, 64px);
+    --step-marquee: clamp(44px, 8vw, 96px);
+    --step-marquee-xl: clamp(56px, 12vw, 120px);
+  }
+}
+
+/* ── Tier: COMPACT — ≥ 1024px ── */
+@media (min-width: 64rem) {
+  :root {
+    --tier: compact;
+    --frame-columns: 12;
+    --frame-gutter: 20px;
+    --rest-thought: 64px;
+    --rest-passage: 96px;
+    --rest-scene: 136px;
+    --rest-act: 200px;
+    --step-console-sm: 13px;
+    --step-console: 15px;
+    --step-plate-body: 17px;
+    --step-plate-lead: 20px;
+    --step-plate-line: 25px;
+    --step-plate-line-lg: 31px;
+    --step-plate-line-xl: 38px;
+    --step-marquee-sm: clamp(48px, 6vw, 96px);
+    --step-marquee: clamp(64px, 8vw, 168px);
+    --step-marquee-xl: clamp(72px, 13vw, 220px);
+  }
+}
+
+/* ── Tier: STAGE — ≥ 1440px ── */
+@media (min-width: 90rem) {
+  :root {
+    --tier: stage;
+    --frame-columns: 12;
+    --frame-gutter: 24px;
+    --rest-thought: 64px;
+    --rest-passage: 104px;
+    --rest-scene: 160px;
+    --rest-act: 240px;
+    --step-console-sm: 13px;
+    --step-console: 15px;
+    --step-plate-body: 17px;
+    --step-plate-lead: 21px;
+    --step-plate-line: 27px;
+    --step-plate-line-lg: 34px;
+    --step-plate-line-xl: 42px;
+    --step-marquee-sm: clamp(48px, 6vw, 96px);
+    --step-marquee: clamp(64px, 8vw, 168px);
+    --step-marquee-xl: clamp(72px, 13vw, 220px);
+  }
+}
+
+/* ── V1 legacy runtime vars. Retire with the V1 sections. ── */
+:root {
+  --glass-obsidian-surface: #12161C;
+  --glass-filament-tint: rgb(242 180 92 / 0.05);
+  --portrait-aspect: 1 / 1;
+  --portrait-monumental-width: min(62svh, calc(100vw - (2 * var(--spacing-safe))));
+  --portrait-conversational-width: 46svh;
+  --portrait-distant-width: 12svh;
 }
