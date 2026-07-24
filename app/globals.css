@@ -756,3 +756,1528 @@ html[data-crew="on"] #hero .hero-keylight {
     background-color: var(--color-bone-25);
   }
 }
+
+/*
+ * ═══════════════════════════════════════════════════════════════════════════
+ * THE ANCHOR — the permanent identity rail.  docs/v2/04-sidebar.md
+ *
+ * Not a navigation widget: the Hero, continued. Company, not chrome (§1.2).
+ *
+ * ── One identity, four frames ──────────────────────────────────────────────
+ * There is exactly ONE identity link in the document. Its three presentational
+ * forms — monogram, chip, wordmark — are `display`-switched per tier, never
+ * duplicated: §3.3 gives the monogram one job (identity where space is scarce)
+ * and forbids showing it on the expanded rail beside the chip. So the phone
+ * bar and the desktop rail are the same element re-blocked, and the accessible
+ * name "Raheel Baig — back to top" exists once in the whole page.
+ *
+ * ── The dock contract ──────────────────────────────────────────────────────
+ * Every reveal below is a pure function of `--dock-p`, the 0→1 dock progress
+ * from `03 §8`. It defaults to 1 — **docked** — so the rest state is what
+ * renders with no JavaScript and under reduced motion (§8.1, §8.4). The Crew's
+ * entire job is to scrub that one number; the §2.2 furniture keyframes then
+ * fall out of this stylesheet. Nothing mounts, nothing unmounts, nothing
+ * teleports: the furniture is revealed by light, never remounted.
+ *
+ * ── Rail widths ────────────────────────────────────────────────────────────
+ * Per `11 §7`, the canonical responsive authority: 56px top bar (<768) → 64px
+ * icon-rail (768) → 200px (1024) → 240px (1440). These are one component's
+ * layout constants, not design tokens, so they live here.
+ * ═══════════════════════════════════════════════════════════════════════════
+ */
+:root {
+  --anchor-bar-h: 56px;
+  --anchor-w: 0px;
+}
+@media (min-width: 48rem) {
+  :root {
+    --anchor-w: 64px;
+  }
+}
+@media (min-width: 64rem) {
+  :root {
+    --anchor-w: 200px;
+  }
+}
+@media (min-width: 90rem) {
+  :root {
+    --anchor-w: 240px;
+  }
+}
+
+/*
+ * Content is offset by the rail (02 §6.1) — the rail is chrome, sits outside
+ * the 12-column grid, and must never overlap the film.
+ */
+.anchor-offset {
+  padding-block-start: var(--anchor-bar-h);
+}
+@media (min-width: 48rem) {
+  .anchor-offset {
+    padding-block-start: 0;
+    padding-inline-start: var(--anchor-w);
+  }
+}
+
+/* Chapter targets clear the mobile bar when jumped to. */
+section[id] {
+  scroll-margin-block-start: calc(var(--anchor-bar-h) + var(--spacing-3));
+}
+@media (min-width: 48rem) {
+  section[id] {
+    scroll-margin-block-start: var(--spacing-4);
+  }
+}
+
+@layer components {
+  /*
+   * REEL is the base (11 §2.2 is mobile-first): a 56px monogram bar plus a
+   * summoned overlay (04 §7). The aside spans the frame but is inert — only
+   * the head, the scrim and an opened panel take pointer events, so it never
+   * blocks the film.
+   */
+  .anchor {
+    --dock-p: 1;
+
+    /* The §2.2 furniture keyframes, expressed once. */
+    --reveal-surface: clamp(0, calc((var(--dock-p) - 0.3) / 0.7), 1);
+    --reveal-identity: clamp(0, calc((var(--dock-p) - 0.4) / 0.45), 1);
+    --reveal-nav: clamp(0, calc((var(--dock-p) - 0.8) / 0.2), 1);
+    --reveal-spine: clamp(0, calc((var(--dock-p) - 0.85) / 0.15), 1);
+    --reveal-base: clamp(0, calc((var(--dock-p) - 0.92) / 0.08), 1);
+
+    --anchor-progress: 0;
+    --anchor-pad: var(--spacing-4);
+    --anchor-chip: 48px;
+
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-nav);
+    pointer-events: none;
+  }
+
+  /* ── The head: identity + (phone) the menu affordance ─────────────────── */
+
+  .anchor-head {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline: 0;
+    z-index: 2;
+    display: flex;
+    height: var(--anchor-bar-h);
+    align-items: center;
+    justify-content: space-between;
+    padding-inline: var(--anchor-pad);
+    border-block-end: 1px solid var(--glass-edge-rest);
+    background-color: var(--glass-slate-surface);
+    opacity: var(--reveal-surface);
+    pointer-events: auto;
+  }
+
+  /*
+   * ONE link back to the opening frame (§5). The chip and the wordmark are a
+   * single affordance, not two — and on phones the same link *is* the
+   * monogram, which is why there is no second identity anywhere.
+   */
+  .anchor-identity {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+    opacity: var(--reveal-identity);
+  }
+
+  /* The compact-state mark (§3.3). Phone only — never beside the chip. */
+  .anchor-monogram {
+    font-family: var(--font-marquee);
+    font-size: var(--text-plate-lead);
+    line-height: 1;
+    color: var(--color-bone-70);
+  }
+  .anchor-identity:hover .anchor-monogram,
+  .anchor-identity:focus-visible .anchor-monogram {
+    color: var(--color-bone-100);
+  }
+
+  /* The docked portrait (§5): Distant register, square, edge-feathered. */
+  .anchor-chip {
+    position: relative;
+    display: none;
+    width: var(--anchor-chip);
+    height: var(--anchor-chip);
+    flex: none;
+    border-radius: var(--radius-precise);
+    /* A small ambient glow so the chip reads as lit, not flat: the Hero's
+       warm key at far lower intensity, same temperature (§5). */
+    box-shadow: 0 0 calc(var(--glow-radius) / 3) var(--glow-bloom);
+  }
+  .anchor-chip-image {
+    object-fit: cover;
+    object-position: top;
+    /* The same edge-dissolve the figure carries everywhere (01 §19) — the
+       figure inhabits the dark rather than sitting on it. */
+    -webkit-mask-image: radial-gradient(
+      ellipse 82% 82% at 50% 38%,
+      black 54%,
+      transparent 96%
+    );
+    mask-image: radial-gradient(
+      ellipse 82% 82% at 50% 38%,
+      black 54%,
+      transparent 96%
+    );
+  }
+  .anchor-chip-absent {
+    background-image: radial-gradient(
+      ellipse 62% 52% at 50% 36%,
+      var(--glow-lift),
+      transparent 78%
+    );
+  }
+  .anchor-identity:hover .anchor-chip,
+  .anchor-identity:focus-visible .anchor-chip {
+    box-shadow: 0 0 calc(var(--glow-radius) / 2) var(--glow-bloom);
+  }
+
+  .anchor-wordmark {
+    display: none;
+    font-family: var(--font-console);
+    font-size: var(--text-console);
+    letter-spacing: var(--tracking-console);
+    color: var(--color-bone-70);
+  }
+  .anchor-identity:hover .anchor-wordmark,
+  .anchor-identity:focus-visible .anchor-wordmark {
+    color: var(--color-bone-100);
+  }
+
+  .anchor-menu {
+    min-height: var(--spacing-hit);
+    padding-inline: var(--spacing-2);
+    font-family: var(--font-console);
+    font-size: var(--text-console-sm);
+    letter-spacing: var(--tracking-console);
+    text-transform: uppercase;
+    color: var(--color-bone-45);
+    cursor: pointer;
+  }
+  .anchor-menu:hover,
+  .anchor-menu:focus-visible {
+    color: var(--color-bone-100);
+  }
+
+  .anchor-scrim {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background-color: rgb(8 10 13 / 0.72);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--duration-gesture) var(--ease-glide);
+  }
+  .anchor[data-open] .anchor-scrim {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /*
+   * The panel: a full-screen Smoke overlay on REEL, the rail body on every
+   * other tier. Its blur exists only while the overlay is open, so the cost is
+   * bounded — §9.1 reserves blur for small and transient surfaces.
+   */
+  .anchor-panel {
+    position: fixed;
+    z-index: 1;
+    inset-block: var(--anchor-bar-h) 0;
+    inset-inline: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--rest-passage);
+    overflow-y: auto;
+    padding: var(--rest-thought) var(--anchor-pad) var(--spacing-5);
+    background-color: var(--glass-smoke-surface);
+    backdrop-filter: blur(var(--blur-smoke));
+    opacity: 0;
+    /* `visibility`, not opacity alone: a closed overlay must leave the tab
+       order entirely, or keyboard users tab into invisible links (§8.3). */
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity var(--duration-gesture) var(--ease-glide),
+      visibility 0s linear var(--duration-gesture);
+  }
+  .anchor[data-open] .anchor-panel {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition-delay: 0s;
+  }
+
+  /* ── Chapters (§4) ────────────────────────────────────────────────────── */
+
+  .anchor-nav {
+    opacity: var(--reveal-nav);
+  }
+  .anchor-chapters {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+  }
+
+  /*
+   * The whole row is the target, not just the text (§4.4) — ≥44px on every
+   * tier, which is what makes the rail usable on a touchscreen.
+   */
+  .anchor-chapter {
+    display: flex;
+    min-height: var(--spacing-hit);
+    align-items: center;
+    gap: var(--spacing-2);
+    font-family: var(--font-console);
+    font-size: var(--text-console);
+    letter-spacing: var(--tracking-console);
+    color: var(--color-bone-45);
+  }
+  .anchor-chapter:hover,
+  .anchor-chapter:focus-visible {
+    color: var(--color-bone-70);
+  }
+  /* Only the present is lit; direction is the spine's job, not the labels' */
+  .anchor-chapter[aria-current] {
+    color: var(--color-bone-100);
+  }
+
+  .anchor-tick {
+    width: 4px;
+    height: 4px;
+    flex: none;
+    border-radius: var(--radius-round);
+    background-color: transparent;
+    transition:
+      background-color var(--duration-gesture) var(--ease-glide),
+      box-shadow var(--duration-gesture) var(--ease-glide);
+  }
+  .anchor-chapter[aria-current] .anchor-tick {
+    background-color: var(--color-sol-400);
+    box-shadow: 0 0 calc(var(--glow-radius) / 4) var(--glow-bloom);
+  }
+
+  /* ── Base cluster: state → action → reach (§3.5) ──────────────────────── */
+
+  .anchor-base {
+    display: flex;
+    margin-block-start: auto;
+    flex-direction: column;
+    gap: var(--rest-thought);
+    opacity: var(--reveal-base);
+  }
+
+  .anchor-status {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    font-family: var(--font-console);
+    font-size: var(--text-console-sm);
+    letter-spacing: var(--tracking-console);
+    color: var(--color-bone-45);
+  }
+  .anchor-status-dot {
+    width: 6px;
+    height: 6px;
+    flex: none;
+    border-radius: var(--radius-round);
+    background-color: var(--color-ion-400);
+  }
+  .anchor-status-dot[data-tone="sol"] {
+    background-color: var(--color-sol-400);
+  }
+
+  /*
+   * Quiet by law (§3.4): a Console link with a lit underline, never a
+   * Sol-glass primary — each section already owns the one Sol-lit action per
+   * viewport the brand permits (01 §15), and a glowing rail CTA would create a
+   * second primary in every single frame.
+   */
+  .anchor-cta {
+    display: inline-flex;
+    min-height: var(--spacing-hit);
+    align-items: center;
+    align-self: flex-start;
+    font-family: var(--font-console);
+    font-size: var(--text-console);
+    letter-spacing: var(--tracking-console);
+    color: var(--color-bone-70);
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: var(--color-sol-600);
+    text-underline-offset: 6px;
+  }
+  .anchor-cta:hover,
+  .anchor-cta:focus-visible {
+    color: var(--color-bone-100);
+    text-decoration-color: var(--color-sol-400);
+  }
+
+  .anchor-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-2) var(--spacing-4);
+  }
+  .anchor-link {
+    display: inline-flex;
+    min-height: var(--spacing-hit);
+    align-items: center;
+    font-family: var(--font-console);
+    font-size: var(--text-console-sm);
+    letter-spacing: var(--tracking-console);
+    color: var(--color-bone-45);
+  }
+  .anchor-link:hover,
+  .anchor-link:focus-visible {
+    color: var(--color-bone-70);
+  }
+
+  /* ── The progress spine (§6) ──────────────────────────────────────────── */
+
+  /*
+   * REEL: a horizontal hairline beneath the bar, replacing the vertical spine
+   * (§7). Always `transform`, never `width`/`height` (10 §17.2).
+   */
+  .anchor-spine {
+    position: fixed;
+    z-index: 2;
+    inset-block-start: var(--anchor-bar-h);
+    inset-inline: 0;
+    height: 1px;
+    background-color: var(--glass-edge-rest);
+    opacity: var(--reveal-spine);
+  }
+  .anchor-spine-lit {
+    height: 100%;
+    transform: scaleX(var(--anchor-progress));
+    transform-origin: left center;
+    background-color: var(--color-bone-70);
+    /* Warms toward Sol as the film nears its end (§6). Declared after the
+       solid so an engine without calc()-inside-color-mix keeps the hairline. */
+    background-color: color-mix(
+      in oklab,
+      var(--color-sol-400) calc(var(--anchor-progress) * 100%),
+      var(--color-bone-70)
+    );
+    /* Present when moving, receding during stillness (§6). */
+    opacity: 0.5;
+    transition: opacity var(--duration-passage) var(--ease-glide);
+  }
+  .anchor[data-scrolling] .anchor-spine-lit {
+    opacity: 1;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     COLUMN (≥768) — the collapsed 64px icon-rail (04 §7, 11 §7).
+     The bar becomes the rail's head; the overlay becomes the rail's body.
+     ══════════════════════════════════════════════════════════════════════ */
+  @media (min-width: 48rem) {
+    .anchor {
+      --anchor-pad: var(--spacing-2);
+      inset-inline-end: auto;
+      display: flex;
+      width: var(--anchor-w);
+      flex-direction: column;
+      pointer-events: auto;
+      /* Slate, not Smoke (§9.1): a full-height blurred surface would filter
+         everything scrolling behind it on every frame of the session. A solid
+         rail is free to composite and still reads as lit via its top-lit edge. */
+      background-color: var(--glass-slate-surface);
+      background-color: color-mix(
+        in oklab,
+        var(--glass-slate-surface) calc(var(--reveal-surface) * 100%),
+        transparent
+      );
+    }
+    /* The hairline right edge, lit toward the top — the key light is above. */
+    .anchor::after {
+      content: "";
+      position: absolute;
+      inset-block: 0;
+      inset-inline-end: 0;
+      width: 1px;
+      background-image: linear-gradient(
+        var(--glass-edge-lit),
+        var(--glass-edge-rest) 32%
+      );
+      opacity: var(--reveal-surface);
+    }
+
+    .anchor-head {
+      position: static;
+      height: auto;
+      justify-content: center;
+      padding: var(--rest-thought) var(--anchor-pad) 0;
+      border-block-end: 0;
+      background-color: transparent;
+      opacity: 1;
+    }
+
+    /* The identity swaps forms: the mark gives way to the figure (§3.3). */
+    .anchor-monogram,
+    .anchor-menu,
+    .anchor-scrim {
+      display: none;
+    }
+    .anchor-chip {
+      display: block;
+    }
+
+    .anchor-panel {
+      position: static;
+      z-index: auto;
+      flex: 1;
+      inset: auto;
+      padding: var(--rest-passage) var(--anchor-pad) var(--spacing-5);
+      background-color: transparent;
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      backdrop-filter: none;
+      transition: none;
+    }
+
+    .anchor-chapter {
+      justify-content: center;
+    }
+    /* Labels collapse to lit ticks, but stay in the accessibility tree. */
+    .anchor-chapter-label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    .anchor-tick {
+      width: 6px;
+      height: 6px;
+      background-color: var(--color-night-500);
+    }
+    .anchor-chapter:hover .anchor-tick,
+    .anchor-chapter:focus-visible .anchor-tick {
+      background-color: var(--color-bone-45);
+    }
+
+    .anchor-base {
+      align-items: center;
+      gap: var(--spacing-5);
+    }
+    .anchor-cta {
+      align-self: center;
+    }
+    .anchor-links {
+      justify-content: center;
+    }
+
+    /* The spine returns to the rail's inner-left edge, vertical (§6). */
+    .anchor-spine {
+      position: absolute;
+      inset-block: 0;
+      inset-inline: 0 auto;
+      width: 2px;
+      height: auto;
+    }
+    .anchor-spine-lit {
+      width: 100%;
+      /* Drawn on dock (scaleY 0→1, origin top), then filled by progress. */
+      transform: scaleY(calc(var(--anchor-progress) * var(--reveal-spine)));
+      transform-origin: center top;
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     COMPACT (≥1024) — the 200px rail. The wordmark and labels return.
+     ══════════════════════════════════════════════════════════════════════ */
+  @media (min-width: 64rem) {
+    .anchor {
+      --anchor-pad: var(--spacing-4);
+      --anchor-chip: 56px;
+    }
+    .anchor-head {
+      justify-content: flex-start;
+    }
+    .anchor-wordmark {
+      display: block;
+    }
+    .anchor-chapter {
+      justify-content: flex-start;
+    }
+    .anchor-chapter-label {
+      position: static;
+      width: auto;
+      height: auto;
+      overflow: visible;
+      clip-path: none;
+      white-space: normal;
+    }
+    .anchor-tick,
+    .anchor-chapter:hover .anchor-tick,
+    .anchor-chapter:focus-visible .anchor-tick {
+      width: 4px;
+      height: 4px;
+      background-color: transparent;
+    }
+    .anchor-chapter[aria-current] .anchor-tick {
+      background-color: var(--color-sol-400);
+    }
+    .anchor-base {
+      align-items: flex-start;
+      gap: var(--rest-thought);
+    }
+    .anchor-cta {
+      align-self: flex-start;
+    }
+    .anchor-links {
+      justify-content: flex-start;
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     Reduced motion (§8.4, 10 §15.2): the rail is simply present, docked.
+     Pinned here rather than trusted to the Crew, so the designed cut holds
+     even if a timeline misbehaves.
+     ══════════════════════════════════════════════════════════════════════ */
+  @media (prefers-reduced-motion: reduce) {
+    .anchor {
+      --dock-p: 1;
+    }
+    /* State light is kept — only motion is removed (10 §15.2, Category 4). */
+    .anchor-spine-lit,
+    .anchor-panel,
+    .anchor-scrim {
+      transition-duration: var(--duration-instant);
+    }
+  }
+}
+
+/*
+ * ═══════════════════════════════════════════════════════════════════════════
+ * SECTION 02 — ABOUT ("Closer").  docs/v2/05-about.md
+ *
+ * Not a biography — a point of view. An asymmetric editorial spread whose job
+ * is one emotional shift: admiration → trust (§1.2).
+ *
+ * ── The readability contract (§8.4, the critical rule) ──────────────────────
+ * "The static Set renders all lines at a readable tone." Every line below
+ * ships at full contrast. The Crew dims *passed* lines by driving
+ * `--about-line-lit`, and never below `--about-dim` — an AA floor. Opacity is
+ * a visual enhancement layered over already-readable text, never the source of
+ * truth, so no-JS, screen-reader and reduced-motion visitors always read full
+ * contrast.
+ *
+ * ── No overflow clipping on this section ───────────────────────────────────
+ * `overflow: clip/hidden` on any ancestor kills `position: sticky`, and the
+ * sticky portrait is the spread's whole mechanic (§2.1). Nothing here clips.
+ * ═══════════════════════════════════════════════════════════════════════════
+ */
+@layer components {
+  .about {
+    /* The Crew's contract for §5.2. 1 = lit; the dim floor is the AA tone. */
+    --about-line-lit: 1;
+    --about-dim: 0.5;
+
+    /* Conversational scale per tier (11 §3.4). REEL is width-anchored. */
+    --about-figure-size: 100%;
+
+    position: relative;
+    isolation: isolate;
+    padding-block: var(--rest-passage);
+  }
+
+  /* ── The rig (§2.6) ───────────────────────────────────────────────────── */
+
+  .about-rig {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /*
+   * The key, warmed ~200K toward candlelight versus the Hero — mixed toward
+   * Sol-600 rather than raised in opacity, because §2.6 is explicit that the
+   * change is *warmer, not brighter*. The broad second stop is the volumetric
+   * softness: a quiet room with one lamp, the black going soft around it.
+   */
+  .about-keylight {
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(
+        ellipse 30% 34% at 50% 22%,
+        color-mix(in oklab, var(--glow-bloom) 62%, var(--color-sol-600)),
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 68% 60% at 50% 22%,
+        color-mix(in oklab, var(--glow-bloom) 22%, transparent),
+        transparent 76%
+      );
+  }
+
+  /* ── The spread (§2.1) ────────────────────────────────────────────────── */
+
+  /*
+   * REEL is the base (11 §2.2): figure over voice. Same narrative, re-blocked
+   * vertically — one face, one voice, one line at a time (§7).
+   */
+  .about-spread {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--rest-scene);
+    padding-inline: var(--spacing-frame);
+  }
+
+  .about-figure-col {
+    display: flex;
+    justify-content: center;
+  }
+
+  .about-figure {
+    position: relative;
+    display: flex;
+    width: var(--about-figure-size);
+    max-width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-3);
+  }
+
+  /*
+   * Depth is layers, never shadows (§2.7, 01 §12): night-900 behind the
+   * figure so the edge-dissolve has somewhere to go. Without it the feathered
+   * edges fade into the value they started from and the figure reads as a
+   * sticker rather than inhabiting the room.
+   */
+  .about-figure::before {
+    content: "";
+    position: absolute;
+    inset: -14% -14% auto;
+    aspect-ratio: 1;
+    background-image: radial-gradient(
+      ellipse 52% 48% at 50% 42%,
+      var(--color-night-900),
+      transparent 72%
+    );
+  }
+
+  .about-figure-frame,
+  .about-figure-absent {
+    position: relative;
+    width: 100%;
+    /* The master is a square chest-up crop (12 §5.1), so the box is 1:1 on
+       every tier and the grade never changes shape. Reserved up front → CLS 0. */
+    aspect-ratio: 1;
+    border-radius: var(--radius-precise);
+  }
+
+  .about-figure-grade {
+    /* The same edge-dissolve every appearance carries (01 §19), and the same
+       two static light filters: a warm key from the high camera-left, a thin
+       cool Ion rim parting the far shoulder from the dark. */
+    -webkit-mask-image: radial-gradient(
+      ellipse 84% 80% at 50% 36%,
+      black 52%,
+      transparent 94%
+    );
+    mask-image: radial-gradient(
+      ellipse 84% 80% at 50% 36%,
+      black 52%,
+      transparent 94%
+    );
+    filter: drop-shadow(-10px -6px 26px rgb(242 180 92 / 0.12))
+      drop-shadow(14px 8px 24px rgb(132 167 184 / 0.1));
+  }
+
+  .about-figure-absent {
+    background-image: radial-gradient(
+      ellipse 60% 48% at 50% 34%,
+      var(--glow-lift),
+      transparent 78%
+    );
+  }
+
+  /*
+   * The measure mark (§4.5). Instrumentation, not decoration: a baseline tick
+   * with a hairline running off it, the way a scale is marked on an
+   * instrument. It carries the engineering register while the Console fact is
+   * copy-pending — a structural mark claims nothing, and §4.2 forbids claims.
+   */
+  .about-measure {
+    display: flex;
+    width: 100%;
+    height: 8px;
+    align-items: flex-start;
+    justify-content: center;
+    border-block-start: 1px solid var(--color-night-500);
+  }
+  .about-measure::before {
+    content: "";
+    width: 1px;
+    height: 100%;
+    background-color: var(--color-bone-25);
+  }
+
+  /* The museum label, not a résumé (§2.1, §4.5). */
+  .about-fact {
+    font-family: var(--font-console);
+    font-size: var(--text-console-sm);
+    letter-spacing: var(--tracking-console);
+    color: var(--color-bone-45);
+    text-align: center;
+  }
+
+  /* ── The voice (§2.3, §3.3) ───────────────────────────────────────────── */
+
+  .about-voice {
+    display: flex;
+    flex-direction: column;
+    /* Lines are distributed vertically so the visitor descends through them
+       one at a time (§2.4) — the rest between them is content, not slack. */
+    gap: var(--rest-scene);
+    /* 11 §3.3's intrinsic cap. `--container-read` is not used here: it
+       subtracts the safe margin itself, and `.about-spread` has already
+       applied it, so it would subtract twice and over-narrow the measure. */
+    max-width: var(--measure-ch);
+  }
+
+  /*
+   * There are no paragraphs here — there are lines (§3.3). Each is a
+   * self-contained sentence at Plate line scale: mid-scale, clearly *spoken*
+   * rather than *titled*, which the forbidden gap below Marquee protects
+   * (§2.3, 01 §5.2).
+   */
+  .about-line {
+    font-family: var(--font-plate);
+    font-size: var(--text-plate-line);
+    color: var(--color-bone-100);
+    opacity: var(--about-line-lit);
+    text-wrap: pretty;
+  }
+
+  /* On phones each line holds roughly a screen, with generous vertical dark
+     between (§7) — the intimacy survives by pacing, not by shrinking. */
+  .about-line {
+    display: flex;
+    min-block-size: 38svh;
+    align-items: center;
+  }
+
+  /* A rest before intent lands (§2.4): the turn forward gets its own breath. */
+  .about-line[data-beat="intent"] {
+    margin-block-start: var(--rest-passage);
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     COLUMN (≥768) — still stacked, but the frame is roomy enough that the
+     lines no longer need a screen each (§7: tablet stacks; lines still
+     light on scroll).
+     ══════════════════════════════════════════════════════════════════════ */
+  @media (min-width: 48rem) {
+    .about {
+      --about-figure-size: min(42svh, 100%);
+    }
+    .about-line {
+      display: block;
+      min-block-size: 0;
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     COMPACT (≥1024) — the editorial spread proper (§2.1, §7).
+     Portrait one-third and sticky; monologue on the right page.
+     ══════════════════════════════════════════════════════════════════════ */
+  @media (min-width: 64rem) {
+    .about-spread {
+      display: grid;
+      /* The content field's 12 columns — the rail sits outside the grid
+         entirely (§0, 02 §6.1), so these columns are the field, not the
+         viewport. */
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      /* `start`, not `center`: centring grid items would defeat the sticky
+         portrait, which needs a taller row to travel within. */
+      align-items: start;
+      column-gap: var(--spacing-gutter);
+    }
+
+    /* Left page, content columns 1–4 (§2.1). */
+    .about-figure-col {
+      position: sticky;
+      inset-block-start: 0;
+      grid-column: 1 / span 4;
+      height: 100svh;
+      align-items: center;
+    }
+
+    /* Right page, content columns 6–12 (§2.1). */
+    .about-voice {
+      grid-column: 6 / span 7;
+    }
+
+    /* The lamp moves with the figure: over the left page, not the centre. */
+    .about-keylight {
+      background-image:
+        radial-gradient(
+          ellipse 24% 40% at 22% 48%,
+          color-mix(in oklab, var(--glow-bloom) 62%, var(--color-sol-600)),
+          transparent 70%
+        ),
+        radial-gradient(
+          ellipse 58% 72% at 22% 48%,
+          color-mix(in oklab, var(--glow-bloom) 22%, transparent),
+          transparent 76%
+        );
+    }
+
+    .about-figure,
+    .about-fact {
+      text-align: start;
+    }
+    .about-figure {
+      align-items: flex-start;
+    }
+    .about-measure {
+      justify-content: flex-start;
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     STAGE (≥1440) — full Conversational scale (11 §3.4).
+     ══════════════════════════════════════════════════════════════════════ */
+  @media (min-width: 90rem) {
+    .about {
+      --about-figure-size: min(46svh, 100%);
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     Reduced motion (§8.4, 10 §15.2): a complete, legible editorial spread.
+     Every line at full readable tone; no light-pacing, no lateral step, no
+     breath. Pinned here so the designed cut holds even if a Crew timeline
+     drives the variable.
+     ══════════════════════════════════════════════════════════════════════ */
+  @media (prefers-reduced-motion: reduce) {
+    .about {
+      --about-line-lit: 1;
+    }
+  }
+}
+
+/*
+ * ═══════════════════════════════════════════════════════════════════════════
+ * SECTION 04 — SELECTED WORK.  docs/v2/06-project-showcase.md
+ *
+ * An exhibition, not a portfolio. One commanding work at a time, brought into
+ * a pocket of light on a dark gallery wall, its own interface the brightest
+ * thing in the room.
+ *
+ * ── The Set is the stacked cut ─────────────────────────────────────────────
+ * §2.1 pins the stage; §9.1 requires no-JS and reduced-motion to get "a plain
+ * vertical stack of three complete exhibits". `position: sticky` needs no
+ * JavaScript, so pinning here would pile three worlds into one frame with no
+ * scrub to separate them. The stage and track are therefore plain wrappers
+ * with Crew hooks, and this vertical exhibition is simultaneously the phone
+ * composition (§8, 11 §6) and the accessible cut.
+ *
+ * ── Signature temperatures (§3.5) ──────────────────────────────────────────
+ * Range proven through light before a word is read. Each world sets one
+ * variable; the key pocket and the window's grade both read it, so a world's
+ * temperature can never disagree with itself.
+ * ═══════════════════════════════════════════════════════════════════════════
+ */
+@layer components {
+  .showcase {
+    position: relative;
+    isolation: isolate;
+  }
+
+  /*
+   * The Threshold (§2.2, §2.3): the overture, and pure motion. In the static
+   * cut it is the held half-beat of near-emptiness §7 describes — reserved
+   * space, no invented visual. The Crew's assembly and single orbit mount
+   * here; on low tiers it degrades to a light-gather dissolve (§10).
+   */
+  .showcase-threshold {
+    block-size: var(--rest-act);
+  }
+  @media (min-width: 48rem) {
+    .showcase-threshold {
+      block-size: 60svh;
+    }
+  }
+
+  .showcase-track {
+    display: flex;
+    flex-direction: column;
+    /* The dark between exhibits is content, never slack (01 §7). */
+    gap: var(--rest-act);
+  }
+
+  /* ── One exhibit (§3) ─────────────────────────────────────────────────── */
+
+  .world {
+    position: relative;
+    isolation: isolate;
+    padding-inline: var(--spacing-frame);
+  }
+
+  /* §3.5's signature temperatures. */
+  .world[data-world="salhub"] {
+    /* Daylight-neutral clarity — trust and utility. */
+    --world-temp: var(--color-bone-100);
+    --world-temp-key: 5%;
+    --world-temp-tint: 3%;
+  }
+  .world[data-world="strangerus"] {
+    /* The warmest of the three — human-hour dusk, people and connection. */
+    --world-temp: var(--color-sol-400);
+    --world-temp-key: 9%;
+    --world-temp-tint: 6%;
+  }
+  .world[data-world="nzh"] {
+    /* Cool, exact, international — the crispest, most engineered light. */
+    --world-temp: var(--color-ion-400);
+    --world-temp-key: 7%;
+    --world-temp-tint: 5%;
+  }
+
+  /*
+   * The one key pocket of light on the product (§3.4) — the viewport's one
+   * strong glow, warmed or cooled to this world's temperature. The product
+   * floats in a lit pocket; the rest of the frame is the gallery wall (§3.3).
+   */
+  .world-key {
+    position: absolute;
+    z-index: -1;
+    inset: -10% -6%;
+    background-image: radial-gradient(
+      ellipse 46% 52% at 68% 42%,
+      color-mix(in oklab, var(--world-temp) var(--world-temp-key), transparent),
+      transparent 72%
+    );
+  }
+
+  /*
+   * REEL is the base (11 §2.2, §6): the un-pinned vertical exhibition. Each
+   * world is a full-bleed held screen — visual dominant, then the copy.
+   */
+  .world-frame {
+    display: flex;
+    flex-direction: column;
+    gap: var(--rest-passage);
+  }
+
+  .world-visual {
+    position: relative;
+    isolation: isolate;
+  }
+
+  /*
+   * The machined glass window (§3.2): `radius-glass`, Slate, a lit top edge.
+   * Silent chrome — no glossy device render, because those say "product ad"
+   * and we say "specimen on a bench" (01 §18).
+   */
+  .world-window {
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    border: 1px solid var(--glass-edge-rest);
+    border-block-start-color: var(--glass-edge-lit);
+    border-radius: var(--radius-glass);
+    background-color: var(--glass-slate-surface);
+  }
+
+  /*
+   * Grading the interface into the room (§3.2) — "the single most important
+   * rule here". Blacks settle toward `night`, the highlights come down, and
+   * saturation drops a step so a bright product screenshot never blows a hole
+   * in the dark gallery wall.
+   */
+  .world-shot {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: brightness(0.78) contrast(1.06) saturate(0.86);
+  }
+
+  /*
+   * The second half of the grade: this world's temperature laid over the
+   * shot, and the lower edge dissolving into the dark so the product sits
+   * *in* the room rather than on top of it.
+   */
+  .world-grade {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(
+        color-mix(
+          in oklab,
+          var(--world-temp) var(--world-temp-tint),
+          transparent
+        ),
+        transparent 55%
+      ),
+      linear-gradient(
+        transparent 55%,
+        color-mix(in oklab, var(--color-night-900) 55%, transparent)
+      );
+  }
+
+  /*
+   * The layered crops (§3.2): secondary details receding behind the
+   * establishing shot at their own depth planes, graded darker and softly
+   * edged into the dark. Depth by layered dark — never a cast shadow.
+   *
+   * Hidden on REEL: 11 §6 gives the phone one legible visual, and a crop
+   * peeking from behind at this width reads as clutter, not dimension.
+   */
+  .world-crop {
+    position: absolute;
+    z-index: 0;
+    display: none;
+    overflow: hidden;
+    border: 1px solid var(--glass-edge-rest);
+    border-radius: var(--radius-glass);
+  }
+  .world-crop .world-shot {
+    filter: brightness(0.5) contrast(1.02) saturate(0.7);
+  }
+
+  /* ── The copy page (§3.1) ─────────────────────────────────────────────── */
+
+  .world-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-4);
+    max-width: var(--measure-ch);
+  }
+
+  /* The reel index, with the instrument tick §3.1 draws beside it. */
+  .world-index {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    font-family: var(--font-console);
+    font-size: var(--text-console-sm);
+    letter-spacing: var(--tracking-console);
+    color: var(--color-bone-45);
+  }
+  .world-tick {
+    width: 4px;
+    height: 4px;
+    border-radius: var(--radius-round);
+    background-color: color-mix(
+      in oklab,
+      var(--world-temp) 60%,
+      var(--color-night-500)
+    );
+  }
+
+  /*
+   * Marquee, small at this distance (§3.2) — deliberately smaller than the
+   * work it names, because the product speaks first (§6).
+   */
+  .world-title {
+    font-family: var(--font-marquee);
+    font-size: var(--text-marquee-sm);
+    color: var(--color-bone-100);
+  }
+
+  /* One sentence — the tension the product answered, never a paragraph. */
+  .world-line {
+    font-family: var(--font-plate);
+    font-size: var(--text-plate-lead);
+    color: var(--color-bone-70);
+    text-wrap: pretty;
+  }
+
+  /*
+   * Instruments as specimen text (§3.2, 01 §8): equality of type is the
+   * fluency claim. Separated by a quiet interpunct — never logos, never chips,
+   * never proficiency bars.
+   */
+  .world-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-1) var(--spacing-2);
+    font-family: var(--font-console);
+    font-size: var(--text-console-sm);
+    letter-spacing: var(--tracking-console);
+    color: var(--color-bone-45);
+  }
+  .world-stack li:not(:last-child)::after {
+    content: "·";
+    margin-inline-start: var(--spacing-2);
+    color: var(--color-bone-25);
+  }
+
+  /*
+   * One primary, one quiet secondary (§3.2, §3.3). On REEL the Enter
+   * threshold takes a comfortable tap zone; the pair never becomes two
+   * glowing actions.
+   */
+  .world-actions {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-4);
+    margin-block-start: var(--spacing-2);
+  }
+  .world-visit {
+    align-self: flex-start;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     COLUMN (≥768) — the pin is retained by the Crew; within a held world the
+     visual still sits above the copy, portrait-friendly (§8, 11 §6).
+     ══════════════════════════════════════════════════════════════════════ */
+  @media (min-width: 48rem) {
+    .world-actions {
+      flex-direction: row;
+      width: auto;
+      align-items: center;
+    }
+    /* One crop returns: the world gains dimension without gaining clutter. */
+    .world-crop[data-depth="1"] {
+      display: block;
+      inset-block-start: 46%;
+      inset-inline-end: -4%;
+      width: 34%;
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     COMPACT (≥1024) — the editorial exhibit: copy left, graded visual right
+     (§3.1, §3.3). The left third speaks; the right two-thirds is the work.
+     ══════════════════════════════════════════════════════════════════════ */
+  @media (min-width: 64rem) {
+    .world-frame {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      align-items: center;
+      column-gap: var(--spacing-gutter);
+    }
+    /*
+     * The visual leads in the DOM — it is §6's first object of attention and,
+     * on stacked tiers, the required visual order (11 §4.3). Placing the copy
+     * left by grid column rather than by `order` keeps logical and tab order
+     * intact; the visual holds no focusable elements, so leading with it costs
+     * the keyboard nothing.
+     */
+    .world-visual {
+      grid-column: 6 / span 7;
+      grid-row: 1;
+    }
+    .world-copy {
+      grid-column: 1 / span 4;
+      grid-row: 1;
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     STAGE (≥1440) — full fidelity: the second depth plane returns (11 §6).
+     ══════════════════════════════════════════════════════════════════════ */
+  @media (min-width: 90rem) {
+    .world-crop[data-depth="2"] {
+      display: block;
+      inset-block-start: 62%;
+      inset-inline-end: -9%;
+      width: 26%;
+    }
+    .world-crop[data-depth="2"] .world-shot {
+      filter: brightness(0.38) contrast(1.02) saturate(0.6);
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     Reduced motion (§9.3): worlds simply present, in order, at full
+     contrast — a complete and premium static exhibition. Nothing in this
+     section animates in the Set, so this only pins the state light.
+     ══════════════════════════════════════════════════════════════════════ */
+  @media (prefers-reduced-motion: reduce) {
+    .world,
+    .world-visual,
+    .world-window {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/*
+ * ═══════════════════════════════════════════════════════════════════════════
+ * SECTION 05 — SERVICES ("What We Could Build").  docs/v2/07-services.md
+ *
+ * The exhale. Three curated capabilities, stated never sold, in the calmest
+ * voice in the film. Confidence rendered as restraint.
+ *
+ * ── The bare warm room (§7, §10) ───────────────────────────────────────────
+ * No background device, no glass, no panels, no ornament, no dramatic key and
+ * no deep vignette — the most evenly comfortable light in the film, a studio
+ * during a good meeting. After four sections of dramatic lighting, evening it
+ * out *is* the lighting expression of "the performance is over."
+ *
+ * ── No primary action, by design (§8, §12) ─────────────────────────────────
+ * The hierarchy terminates in reading and the drift onward, never a button.
+ * The section's single warm accent is the detaching point of light.
+ * ═══════════════════════════════════════════════════════════════════════════
+ */
+@layer components {
+  .services {
+    /* The Crew's contract for §11. 1 = lit; the floor is bone-45, AA (§14). */
+    --service-lit: 1;
+
+    position: relative;
+    isolation: isolate;
+    padding-block: var(--rest-passage);
+  }
+
+  .services-rig {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  /*
+   * Even and calm — a near-flat warm wash rather than a key. Deliberately
+   * broad and low so no part of the frame is dramatically lit: comfort *is*
+   * the design here, and drama would undercut confidence-through-calm.
+   */
+  .services-ambient {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(
+      ellipse 86% 80% at 46% 46%,
+      color-mix(in oklab, var(--glow-bloom) 26%, transparent),
+      transparent 78%
+    );
+  }
+
+  /*
+   * REEL is the base (11 §2.2): a single calm column, offerings stacked with
+   * generous dark, portrait omitted — the person is implied (§13).
+   */
+  .services-frame {
+    padding-inline: var(--spacing-frame);
+  }
+
+  .services-column {
+    display: flex;
+    flex-direction: column;
+    gap: var(--rest-passage);
+  }
+
+  /* Console, quiet — the section names itself and gets out of the way (§9). */
+  .services-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    font-family: var(--font-console);
+    font-size: var(--text-console-sm);
+    font-weight: 400;
+    letter-spacing: var(--tracking-console);
+    text-transform: uppercase;
+    color: var(--color-bone-45);
+  }
+  .services-eyebrow::before {
+    content: "";
+    width: 4px;
+    height: 4px;
+    flex: none;
+    border-radius: var(--radius-round);
+    background-color: var(--color-ion-600);
+  }
+
+  /*
+   * A reel, not a card grid (§7). Generous vertical rhythm between offerings —
+   * the rest is content, and the space is the exhale made visible.
+   */
+  .services-reel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--rest-thought);
+  }
+
+  /*
+   * On REEL the index sits *above* the capability line (§13) — the re-block
+   * that keeps the reel cadence on a tall frame, rather than shrinking a
+   * margin number to illegibility.
+   */
+  .service {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+    opacity: var(--service-lit);
+  }
+
+  .service-index {
+    font-family: var(--font-console);
+    font-size: var(--text-console-sm);
+    letter-spacing: var(--tracking-console);
+    color: var(--color-bone-45);
+  }
+
+  .service-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+    max-width: var(--measure-ch);
+  }
+
+  /*
+   * Plate line: the offer, and the first thing read (§8, §9). No Marquee in
+   * this section — the monumental register belongs to names, titles and the
+   * closing, and withholding it keeps Services a calm middle voice (§9).
+   */
+  .service-line {
+    font-family: var(--font-plate);
+    font-size: var(--text-plate-line);
+    font-weight: 400;
+    color: var(--color-bone-100);
+    text-wrap: pretty;
+  }
+
+  /* The two specifics (§5.1): what kind of product, then the instruments. */
+  .service-what {
+    font-family: var(--font-console);
+    font-size: var(--text-console);
+    letter-spacing: var(--tracking-console);
+    color: var(--color-bone-70);
+  }
+  /*
+   * Instruments as specimen text, interpunct-separated in the copy itself —
+   * never logos, badges, chips, or version numbers (§6, 01 §8).
+   */
+  .service-with {
+    font-family: var(--font-console);
+    font-size: var(--text-console-sm);
+    letter-spacing: var(--tracking-console);
+    color: var(--color-bone-45);
+  }
+
+  /*
+   * The offering under attention lifts one step in light (§10, §12) — the one
+   * ambient effect, and a light change rather than any geometry. Kept under
+   * reduced motion: 10 §15.2 keeps Category-4 state light.
+   */
+  .service:hover .service-line {
+    color: var(--color-bone-100);
+  }
+  .service:hover .service-what {
+    color: var(--color-bone-100);
+  }
+  .service:hover .service-with {
+    color: var(--color-bone-70);
+  }
+
+  /*
+   * The detaching point of light (§7, §10, §11): the section's single warm
+   * accent and the film's first element to move *toward* the visitor. At rest
+   * it simply waits beneath the last offering.
+   */
+  .services-drift {
+    width: 6px;
+    height: 6px;
+    align-self: center;
+    border-radius: var(--radius-round);
+    background-color: var(--color-sol-400);
+    box-shadow: 0 0 calc(var(--glow-radius) / 2) var(--glow-bloom);
+  }
+
+  /* The builder is not shown on phones (§13, 11 §3.4). */
+  .services-figure {
+    display: none;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     COLUMN (≥768) — the index moves into the margin; the reel gains its
+     hanging numbers (§7). The portrait is still withheld (§13).
+     ══════════════════════════════════════════════════════════════════════ */
+  @media (min-width: 48rem) {
+    .service {
+      flex-direction: row;
+      gap: var(--spacing-5);
+    }
+    .service-index {
+      /* A fixed margin column so every line starts on the same axis — the
+         reel reads as instrumentation, which needs alignment to be exact. */
+      width: var(--spacing-5);
+      flex: none;
+      padding-block-start: 0.35em;
+      text-align: end;
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     COMPACT (≥1024) — the Distant figure returns at the frame's edge (§7):
+     the builder back in the room now that the work has spoken.
+     ══════════════════════════════════════════════════════════════════════ */
+  @media (min-width: 64rem) {
+    .services-frame {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      align-items: end;
+      column-gap: var(--spacing-gutter);
+    }
+    .services-column {
+      grid-column: 1 / span 8;
+    }
+    .services-figure {
+      display: block;
+      grid-column: 11 / span 2;
+      justify-self: end;
+      /* Distant register (11 §3.4) — small, quiet, at the edge. */
+      width: 12svh;
+    }
+    .services-figure-image,
+    .services-figure-absent {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1;
+      /* The same edge-dissolve the figure carries everywhere (01 §19). */
+      -webkit-mask-image: radial-gradient(
+        ellipse 80% 78% at 50% 38%,
+        black 50%,
+        transparent 94%
+      );
+      mask-image: radial-gradient(
+        ellipse 80% 78% at 50% 38%,
+        black 50%,
+        transparent 94%
+      );
+      object-fit: cover;
+      object-position: top;
+      opacity: 0.72;
+    }
+    .services-figure-absent {
+      background-image: radial-gradient(
+        ellipse 60% 48% at 50% 34%,
+        var(--glow-lift),
+        transparent 78%
+      );
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     Reduced motion (§12, §14): all offerings present at full contrast, no
+     surfacing, no drift, no lift. Nothing here animates in the Set, so this
+     only pins the Crew's variable.
+     ══════════════════════════════════════════════════════════════════════ */
+  @media (prefers-reduced-motion: reduce) {
+    .services {
+      --service-lit: 1;
+    }
+  }
+}

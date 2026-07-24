@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
+import { Anchor } from "@/components/patterns/anchor";
 import { FooterShell } from "@/components/patterns/footer-shell";
-import { NavigationShell } from "@/components/patterns/navigation-shell";
 import { shell } from "@/content/copy/shell";
 import { metadataTitle, site } from "@/content/site";
 import { siteUrl } from "@/lib/env";
@@ -66,12 +66,25 @@ export default function RootLayout({
         >
           {shell.skipToFilm}
         </a>
-        <NavigationShell />
-        {/* The film plane sits above the Crew's canvas (z-canvas < z-film). */}
-        <main id="film" className="relative z-(--z-film) flex-1">
-          {children}
-        </main>
-        <FooterShell />
+        {/*
+         * The permanent identity anchor (04). It is chrome: fixed, outside the
+         * 12-column content grid, and rendered once here so it is genuinely
+         * continuous — it never remounts between routes or sections, which is
+         * the whole thesis (04 §1.3).
+         */}
+        <Anchor />
+
+        {/*
+         * `anchor-offset` reserves the rail's width so the film never runs
+         * beneath the chrome (02 §6.1). The film plane still sits above the
+         * Crew's canvas (z-canvas < z-film).
+         */}
+        <div className="anchor-offset flex flex-1 flex-col">
+          <main id="film" className="relative z-(--z-film) flex-1">
+            {children}
+          </main>
+          <FooterShell />
+        </div>
       </body>
     </html>
   );
